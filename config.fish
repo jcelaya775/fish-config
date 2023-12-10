@@ -55,9 +55,9 @@ if status is-interactive
   end
 
   # Directories
-  abbr -a cdoc 'cd ~/Documents/'
-  abbr -a cdocs 'cd ~/Documents/'
-  abbr -a crepos 'cd ~/repos/'
+  abbr -a doc 'cd ~/Documents/'
+  abbr -a docs 'cd ~/Documents/'
+  abbr -a repos 'cd ~/repos/'
 
   function nt
     if set -q argv[1]
