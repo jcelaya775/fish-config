@@ -59,6 +59,13 @@ if status is-interactive
     exit
   end
 
+  # Abbreviation
+  abbr -a gcm 'git commit -m'
+  abbr -a gca 'git commit --amend'
+  abbr -a gco 'git checkout'
+  abbr -a ga 'git add'
+  abbr -a gap 'git add --patch'
+
   # Directories
   abbr -a doc 'cd ~/Documents/'
   abbr -a docs 'cd ~/Documents/'
