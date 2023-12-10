@@ -3,6 +3,9 @@ if status is-interactive
   function l
     exa -l $argv
   end
+  function z
+    zoxide $argv
+  end
   function c
     set curr_win_idx $(tmux display-message -p '#I')
     clear
@@ -78,6 +81,7 @@ if status is-interactive
     end
     tmux select-window -t $orig_win_idx
   end
+
   function ns
     if set -q argv[1]
       set num_sessions (math $argv[1] - 1)
@@ -93,11 +97,13 @@ if status is-interactive
   function c.
     cd $(fd --type directory -H --max-depth 1 | fzf) || exit
   end
+
   function c..
     cd ..
     set dir "$(fd --type directory -H --max-depth 1 .. | fzf)"
     cd $dir || exit
   end
+
   function cproj
     cd $HOME/repos/ || return
     set dir "$HOME/repos/$(fd --type directory --max-depth 1 | fzf)"
@@ -117,6 +123,7 @@ if status is-interactive
     cd $dir || exit
     nvim .
   end
+
   function vp
     cd $HOME/repos/ || return
     set dir "$HOME/repos/$(fd --type directory --max-depth 1 | fzf)"
@@ -130,6 +137,7 @@ if status is-interactive
 
     nvim
   end
+
   function vp.
     cd $HOME/repos/ || return
     set dir "$HOME/repos/$(fd --type directory --max-depth 1 | fzf)"
@@ -143,6 +151,7 @@ if status is-interactive
 
     nvim .
   end
+
   function vrepos
     if set -q argv[1]
       set path $argv[1]
@@ -170,6 +179,7 @@ if status is-interactive
     cd $HOME/.config/nvim || return
     nvim $path
   end
+
   function nconf
     if set -q argv[1]
       set path $argv[1]
@@ -180,12 +190,59 @@ if status is-interactive
     cd $HOME/.config/nvim || return
     nvim $path
   end
-  function gconf
-    nvim "$HOME/.gitconfig"
-  end
+
+  abbr -a gconf 'nvim ~/.gitconfig'
 
   function fconf
-    nvim "$HOME/.config/fish/config.fish"
+    cd $HOME/.config/fish
+    nvim config.fish
+  end
+
+  # zoxide
+  abbr -a za 'zoxide add'
+
+  abbr -a zq 'zoxide query'
+  abbr -a zqi 'zoxide query -i'
+
+  abbr -a zr 'zoxide remove'
+
+  function _z_cd
+      cd $argv
+      or return $status
+
+      commandline -f repaint
+
+      if test "$_ZO_ECHO" = "1"
+          echo $PWD
+      end
+  end
+
+  function z
+      set argc (count $argv)
+
+      if test $argc -eq 0
+          _z_cd $HOME
+      else if begin; test $argc -eq 1; and test $argv[1] = '-'; end
+          _z_cd -
+      else
+          set -l _zoxide_result (zoxide query -- $argv)
+          and _z_cd $_zoxide_result
+      end
+  end
+
+  function zi
+      set -l _zoxide_result (zoxide query -i -- $argv)
+      and _z_cd $_zoxide_result
+  end
+
+
+  function zri
+      set -l _zoxide_result (zoxide query -i -- $argv)
+      and zoxide remove $_zoxide_result
+  end
+
+  function _zoxide_hook --on-variable PWD
+      zoxide add (pwd -L)
   end
 end
 
