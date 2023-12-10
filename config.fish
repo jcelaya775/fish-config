@@ -1,3 +1,8 @@
+# Start in tmux
+if status is-interactive && not set -q TMUX
+    exec tmux
+end
+
 if status is-interactive
   # Commands to run in interactive sessions can go here
   function l
@@ -182,6 +187,7 @@ if status is-interactive
     nvim $path
   end
 
+  abbr -a tconf 'nvim ~/.tmux.conf'
   abbr -a gconf 'nvim ~/.gitconfig'
 
   function fconf
