@@ -55,18 +55,9 @@ if status is-interactive
   end
 
   # Directories
-  function cdoc
-    cd ~/Documents/ $argv
-  end
-  function cdocs
-    cd ~/Documents/ $argv
-  end
-  function cdown
-    cd ~/Downloads/ $argv
-  end
-  function crepos
-    cd ~/repos/ $argv
-  end
+  abbr -a cdoc 'cd ~/Documents/'
+  abbr -a cdocs 'cd ~/Documents/'
+  abbr -a crepos 'cd ~/repos/'
 
   function nt
     if set -q argv[1]
