@@ -58,6 +58,7 @@ if status is-interactive
   end
 
   # Abbreviation
+  abbr -a tls 'tmux ls'
   abbr -a gcm 'git commit -m'
   abbr -a gca 'git commit --amend'
   abbr -a gco 'git checkout'
