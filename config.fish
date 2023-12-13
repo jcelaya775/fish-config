@@ -59,6 +59,7 @@ if status is-interactive
 
   # Abbreviation
   abbr -a tls 'tmux ls'
+  abbr -a tn 'tmux new-session -s (pwd | sed \'s/.*\///g\')'
   abbr -a gcm 'git commit -m'
   abbr -a gca 'git commit --amend'
   abbr -a gco 'git checkout'
@@ -83,8 +84,6 @@ if status is-interactive
     end
     tmux select-window -t $orig_win_idx
   end
-
-  abbr -a tn 'tmux switch-client -t (tmux new-session -dP -s (pwd | sed \'s/.*\///g\'))'
 
   function c.
     cd $(fd --type directory -H --max-depth 1 | fzf) || exit
