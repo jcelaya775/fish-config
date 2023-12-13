@@ -235,8 +235,8 @@ if status is-interactive
   end
 end
 
-bind -M insert \el kill-whole-line
-bind -m insert \el kill-whole-line
+bind -M insert \ek kill-line
+bind -M insert \ec kill-whole-line
 bind -M visual -m default y 'fish_clipboard_copy; commandline -f end-selection repaint-mode'
 
 set -gx COLORTERM truecolor
