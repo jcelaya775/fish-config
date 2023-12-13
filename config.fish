@@ -238,8 +238,8 @@ if status is-interactive
   end
 end
 
-# ~/.tmux/plugins
-fish_add_path $HOME/.tmux/plugins/t-smart-tmux-session-manager/bin
+fish_add_path $HOME/.local/bin/
+fish_add_path $HOME/.tmux/plugins/t-smart-tmux-session-manager/bin/
 
 bind -M insert \ek kill-line
 bind -M insert \eu backward-kill-line
