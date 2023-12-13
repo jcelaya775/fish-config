@@ -242,6 +242,7 @@ end
 fish_add_path $HOME/.tmux/plugins/t-smart-tmux-session-manager/bin
 
 bind -M insert \ek kill-line
+bind -M insert \eu backward-kill-line
 bind -M insert \ec kill-whole-line
 bind -M visual -m default y 'fish_clipboard_copy; commandline -f end-selection repaint-mode'
 
