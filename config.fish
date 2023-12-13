@@ -1,8 +1,3 @@
-# Start in tmux
-if status is-interactive && not set -q TMUX
-    exec tmux
-end
-
 if status is-interactive
   # Commands to run in interactive sessions can go here
   function l
@@ -85,17 +80,7 @@ if status is-interactive
     tmux select-window -t $orig_win_idx
   end
 
-  function ns
-    if set -q argv[1]
-      set num_sessions (math $argv[1] - 1)
-    else
-      set num_sessions 1
-    end
-
-    for i in $(seq 1 $num_sessions)
-      tmux new-session -d
-    end
-  end
+  abbr -a ns 'tmux switch-client -t (tmux new-session -dP)'
 
   function c.
     cd $(fd --type directory -H --max-depth 1 | fzf) || exit
