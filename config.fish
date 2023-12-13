@@ -17,9 +17,6 @@ if status is-interactive
   function v.
     nvim . $argv
   end
-  function t
-    tmux $argv
-  end
   function tks
     tmux kill-server $argv
   end
@@ -28,6 +25,12 @@ if status is-interactive
   end
   function tat
     tmux attach -t $argv
+  end
+  function zd
+    set HOME_REPLACER "s|^$HOME/|~/|"
+    set result (zoxide query -l | sed -e "$HOME_REPLACER" | fzf)
+    set result (echo $result | sed 's/~/\/home\/jorge/')
+    cd $result
   end
   function g
     git $argv
@@ -80,7 +83,7 @@ if status is-interactive
     tmux select-window -t $orig_win_idx
   end
 
-  abbr -a ns 'tmux switch-client -t (tmux new-session -dP)'
+  abbr -a tn 'tmux switch-client -t (tmux new-session -dP -s (pwd | sed \'s/.*\///g\'))'
 
   function c.
     cd $(fd --type directory -H --max-depth 1 | fzf) || exit
@@ -234,6 +237,9 @@ if status is-interactive
       zoxide add (pwd -L)
   end
 end
+
+# ~/.tmux/plugins
+fish_add_path $HOME/.tmux/plugins/t-smart-tmux-session-manager/bin
 
 bind -M insert \ek kill-line
 bind -M insert \ec kill-whole-line
