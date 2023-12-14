@@ -115,6 +115,11 @@ if status is-interactive
     nvim .
   end
 
+  function ip
+    set repo "$HOME/repos/$(fd --type directory --max-depth 1 --base-directory $HOME/repos | fzf)"
+    idea $repo > /dev/null 2>&1 &
+  end
+
   function vp
     cd $HOME/repos/ || return
     set dir "$HOME/repos/$(fd --type directory --max-depth 1 | fzf)"
@@ -240,6 +245,7 @@ end
 
 fish_add_path $HOME/.local/bin/
 fish_add_path $HOME/.tmux/plugins/t-smart-tmux-session-manager/bin/
+fish_add_path /opt/idea-IC-232.10227.8/bin
 
 bind -M insert \ek kill-line
 bind -M insert \eu backward-kill-line
