@@ -1,92 +1,23 @@
 if status is-interactive
-  # Commands to run in interactive sessions can go here
-  function l
-    exa -l $argv
-  end
-  function z
-    zoxide $argv
-  end
+  # General/utility
   function c
     set curr_win_idx $(tmux display-message -p '#I')
     clear
     tmux clear-history -t $curr_win_idx
   end
-  function v
-    nvim $argv
-  end
-  function v.
-    nvim . $argv
-  end
-  function tks
-    tmux kill-server $argv
-  end
-  function ta
-    tmux attach $argv
-  end
-  function tat
-    tmux attach -t $argv
-  end
-  function zd
-    set HOME_REPLACER "s|^$HOME/|~/|"
-    set result (zoxide query -l | sed -e "$HOME_REPLACER" | fzf)
-    set result (echo $result | sed 's/~/\/home\/jorge/')
-    cd $result
-  end
-  function g
-    git $argv
-  end
-  function n
-    npm $argv
-  end
-  function y
-    yarn $argv
-  end
-  function pn
-    pnpm $argv
-  end
-  function p
-    python $argv
-  end
-  function gconf
-    nvim ~/.gitconfig $argv
-  end
-  function gc
-    google-chrome $argv
-  end
-  function e
-    exit
-  end
 
-  # Abbreviation
-  abbr -a tls 'tmux ls'
-  abbr -a tn 'tmux new-session -s (pwd | sed \'s/.*\///g\')'
-  abbr -a .t 'touch .t && chmod +x .t && echo -e "#!/usr/bin/env bash\n" > .t && nvim .t'
-  abbr -a gd 'git diff'
-  abbr -a gcm 'git commit -m'
-  abbr -a gca 'git commit --amend'
-  abbr -a gco 'git checkout'
-  abbr -a ga 'git add'
-  abbr -a gap 'git add --patch'
+  abbr -a l "exa -l $argv"
+  abbr -a e 'exit'
+
+
+  # Programs
+  abbr -a n 'npm'
+  abbr -a y 'yarn'
+  abbr -a pn 'pnpm'
+  abbr -a p 'python'
+
 
   # Directories
-  abbr -a cdoc 'cd ~/Documents/'
-  abbr -a cdocs 'cd ~/Documents/'
-  abbr -a crepos 'cd ~/repos/'
-
-  function nt
-    if set -q argv[1]
-      set num_tabs (math $argv[1] - 1)
-    else
-      set num_tabs 1
-    end
-
-    set orig_win_idx $(tmux display-message -p '#I')
-    for i in (seq 1 $num_tabs)
-      tmux new-window
-    end
-    tmux select-window -t $orig_win_idx
-  end
-
   function c.
     cd $(fd --type directory -H --max-depth 1 | fzf) || exit
   end
@@ -96,6 +27,10 @@ if status is-interactive
     set dir "$(fd --type directory -H --max-depth 1 .. | fzf)"
     cd $dir || exit
   end
+
+  abbr -a cdoc 'cd ~/Documents/'
+  abbr -a cdocs 'cd ~/Documents/'
+  abbr -a crepos 'cd ~/repos/'
 
   function cproj
     set dir "$HOME/repos/$(fd --type directory --max-depth 1 --base-directory $HOME/repos | fzf | sed 's/\.\///')"
@@ -108,32 +43,67 @@ if status is-interactive
     t $dir --command "$command"
   end
 
-  function v.f
-    set file "$(fd --type file | fzf)"
-    nvim $file
+
+  # Tmux
+  function nt
+        if set -q argv[1]
+          set num_tabs (math $argv[1] - 1)
+        else
+          set num_tabs 1
+        end
+
+        set orig_win_idx $(tmux display-message -p '#I')
+        for i in (seq 1 $num_tabs)
+          tmux new-window
+        end
+        tmux select-window -t $orig_win_idx
   end
 
-  function v.d
-    set dir "$(fd --type directory | fzf)"
-    cd $dir || exit
-    nvim .
-  end
+  abbr -a tconf 'nvim ~/.tmux.conf'
+  abbr -a tn 'tmux new-session -s (pwd | sed \'s/.*\///g\')'
+  abbr -a ta 'tmux attach'
+  abbr -a .t 'touch .t && chmod +x .t && echo -e "#!/usr/bin/env bash\n" > .t && nvim .t'
+  abbr -a tls 'tmux ls'
+  abbr -a tks 'tmux kill-server'
 
+
+  # Git
+  abbr -a gconf 'nvim ~/.gitconfig'
+  abbr -a g 'git'
+  abbr -a gd 'git diff'
+  abbr -a gcm 'git commit -m'
+  abbr -a gca 'git commit --amend'
+  abbr -a gco 'git checkout'
+  abbr -a ga 'git add'
+  abbr -a gap 'git add --patch'
+
+
+  # Neovim
+  abbr -a v 'nvim'
+  abbr -a v. 'nvim .'
+  abbr -a v.f 'nvim $(fd --type file | fzf)'
+  abbr -a v.d 'cd $(fd --type directory | fzf) && nvim .'
+
+
+  # Config files
+  abbr -a tconf 'nvim ~/.tmux.conf'
+  abbr -a gconf 'nvim ~/.gitconfig'
+
+
+  # IntelliJ
   function ip
     set repo "$HOME/repos/$(fd --type directory --max-depth 1 --base-directory $HOME/repos | fzf)"
     idea $repo > /dev/null 2>&1 &
   end
 
-  abbr -a tconf 'nvim ~/.tmux.conf'
-  abbr -a gconf 'nvim ~/.gitconfig'
 
-  # zoxide
-  abbr -a za 'zoxide add'
-
-  abbr -a zq 'zoxide query'
-  abbr -a zqi 'zoxide query -i'
-
-  abbr -a zr 'zoxide remove'
+  # Zoxide
+  function zd
+        set HOME_REPLACER "s|^$HOME/|~/|"
+        set result (zoxide query -l | sed -e "$HOME_REPLACER" | fzf)
+        set result (echo $result | sed 's/~/\/home\/jorge/')
+        cd $result
+  end
 
   function _z_cd
       cd $argv
@@ -164,7 +134,6 @@ if status is-interactive
       and _z_cd $_zoxide_result
   end
 
-
   function zri
       set -l _zoxide_result (zoxide query -i -- $argv)
       and zoxide remove $_zoxide_result
@@ -173,17 +142,25 @@ if status is-interactive
   function _zoxide_hook --on-variable PWD
       zoxide add (pwd -L)
   end
+
+  abbr -a za 'zoxide add'
+  abbr -a zq 'zoxide query'
+  abbr -a zqi 'zoxide query -i'
+  abbr -a zr 'zoxide remove'
 end
 
+# Path
 fish_add_path $HOME/.local/bin/
 fish_add_path $HOME/.tmux/plugins/t-smart-tmux-session-manager/bin/
 fish_add_path /opt/idea-IC-232.10227.8/bin
 
+# Key bindings
 bind -M insert \ek kill-line
 bind -M insert \eu backward-kill-line
 bind -M insert \ec kill-whole-line
 bind -M visual -m default y 'fish_clipboard_copy; commandline -f end-selection repaint-mode'
 
+# Config
 set -gx COLORTERM truecolor
 set -gx EDITOR nvim
 set -g theme_display_ruby yes
