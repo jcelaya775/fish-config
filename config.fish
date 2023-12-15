@@ -60,6 +60,8 @@ if status is-interactive
   # Abbreviation
   abbr -a tls 'tmux ls'
   abbr -a tn 'tmux new-session -s (pwd | sed \'s/.*\///g\')'
+  abbr -a .t 'touch .t && chmod +x .t && echo -e "#!/usr/bin/env bash\n" > .t && nvim .t'
+  abbr -a gd 'git diff'
   abbr -a gcm 'git commit -m'
   abbr -a gca 'git commit --amend'
   abbr -a gco 'git checkout'
@@ -67,9 +69,9 @@ if status is-interactive
   abbr -a gap 'git add --patch'
 
   # Directories
-  abbr -a doc 'cd ~/Documents/'
-  abbr -a docs 'cd ~/Documents/'
-  abbr -a repos 'cd ~/repos/'
+  abbr -a cdoc 'cd ~/Documents/'
+  abbr -a cdocs 'cd ~/Documents/'
+  abbr -a crepos 'cd ~/repos/'
 
   function nt
     if set -q argv[1]
@@ -96,12 +98,14 @@ if status is-interactive
   end
 
   function cproj
-    cd $HOME/repos/ || return
-    set dir "$HOME/repos/$(fd --type directory --max-depth 1 | fzf)"
-    cd $dir || exit
+    set dir "$HOME/repos/$(fd --type directory --max-depth 1 --base-directory $HOME/repos | fzf | sed 's/\.\///')"
+    set repo (echo $dir | sed 's/.*\///g')
+
     if set -q argv[1]
-      nt $argv[1]
+      set command "nt $argv[1]"
     end
+
+    t $dir --command "$command"
   end
 
   function v.f
@@ -121,78 +125,70 @@ if status is-interactive
   end
 
   function vp
-    cd $HOME/repos/ || return
-    set dir "$HOME/repos/$(fd --type directory --max-depth 1 | fzf)"
-    cd $dir || exit
+    set dir "$HOME/repos/$(fd --type directory --max-depth 1 --base-directory $HOME/repos | fzf | sed 's/\.\///')"
+    set repo (echo $dir | sed 's/.*\///g')
 
-    if set -q argv[1]
-      nt $argv[1]
-    else
-      nt
+    if [ "$(tmux list-sessions | grep $repo | wc -l)" = "0" ] # session does not yet exist
+      if set -q argv[1]
+        set command "nt $argv[1] && nvim"
+      else
+        set command "nt && nvim"
+      end
     end
 
-    nvim
+    t $dir --command "$command"
   end
 
   function vp.
-    cd $HOME/repos/ || return
-    set dir "$HOME/repos/$(fd --type directory --max-depth 1 | fzf)"
-    cd $dir || exit
+    set dir "$HOME/repos/$(fd --type directory --max-depth 1 --base-directory $HOME/repos | fzf | sed 's/\.\///')"
+    set repo (echo $dir | sed 's/.*\///g')
 
-    if set -q argv[1]
-      nt $argv[1]
-    else
-      nt
+    if [ "$(tmux list-sessions | grep $repo | wc -l)" = "0" ] # session does not yet exist
+      if set -q argv[1]
+        set command "nt $argv[1] && nvim ."
+      else
+        set command "nt && nvim ."
+      end
     end
 
-    nvim .
+    t $dir --command "$command"
   end
 
-  function vrepos
-    if set -q argv[1]
-      set path $argv[1]
+  function tnotes
+    if [ $(tmux list-sessions | grep 'Documents' | wc -l) -eq 0 ]
+      t $HOME/Documents/ --command "tmux rename-window -t 0 'notes' && nvim notes.md"
     else
-      set path ""
+      t $HOME/Documents/
     end
-
-    cd $HOME/repos/$path || return
-    nvim .
   end
 
-  function vnotes
-    cd $HOME/Documents/ || return
-    nvim notes.md
-  end
 
   # Config files
   function vconf
-    if set -q argv[1]
-      set path $argv[1]
-    else
-      set path ""
+    if [ "$(tmux list-sessions | grep 'nvim' | wc -l)" = "0" ] # session does not yet exist
+      set command "nt && nvim"
     end
 
-    cd $HOME/.config/nvim || return
-    nvim $path
+    t $HOME/.config/nvim --command "$command"
   end
 
   function nconf
-    if set -q argv[1]
-      set path $argv[1]
-    else
-      set path ""
+    if [ "$(tmux list-sessions | grep 'nvim' | wc -l)" = "0" ] # session does not yet exist
+      set command "nt && nvim"
     end
 
-    cd $HOME/.config/nvim || return
-    nvim $path
+    t $HOME/.config/nvim --command "$command"
   end
 
   abbr -a tconf 'nvim ~/.tmux.conf'
   abbr -a gconf 'nvim ~/.gitconfig'
 
   function fconf
-    cd $HOME/.config/fish
-    nvim config.fish
+    if [ "$(tmux list-sessions | grep 'fish' | wc -l)" = "0" ] # session does not yet exist
+      set command "nt && nvim config.fish"
+    end
+
+    t /home/jorge/.config/fish/ --command "$command"
   end
 
   # zoxide
