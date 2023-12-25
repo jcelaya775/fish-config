@@ -1,159 +1,159 @@
 if status is-interactive
-  # General/utility
-  function c
-    set curr_win_idx $(tmux display-message -p '#I')
-    clear
-    tmux clear-history -t $curr_win_idx
-  end
-
-  abbr -a l "exa -l $argv"
-  abbr -a e 'exit'
-
-
-  # Programs
-  abbr -a n 'npm'
-  abbr -a y 'yarn'
-  abbr -a pn 'pnpm'
-  abbr -a p 'python'
-
-
-  # Directories
-  function c.
-    cd $(fd --type directory -H --max-depth 1 | fzf) || exit
-  end
-
-  function c..
-    cd ..
-    set dir "$(fd --type directory -H --max-depth 1 .. | fzf)"
-    cd $dir || exit
-  end
-
-  abbr -a cdoc 'cd ~/Documents/'
-  abbr -a cdocs 'cd ~/Documents/'
-  abbr -a crepos 'cd ~/repos/'
-
-  function cproj
-    set dir "$HOME/repos/$(fd --type directory --max-depth 1 --base-directory $HOME/repos | fzf | sed 's/\.\///')"
-    set repo (echo $dir | sed 's/.*\///g')
-
-    if set -q argv[1]
-      set command "nt $argv[1]"
+    # General/utility
+    function c
+        set curr_win_idx $(tmux display-message -p '#I')
+        clear
+        tmux clear-history -t $curr_win_idx
     end
 
-    t $dir --command "$command"
-  end
+    abbr -a l "exa -l $argv"
+    abbr -a e 'exit'
 
 
-  # Tmux
-  function nt
+    # Programs
+    abbr -a n 'npm'
+    abbr -a y 'yarn'
+    abbr -a pn 'pnpm'
+    abbr -a p 'python'
+
+
+    # Directories
+    function c.
+        cd $(fd --type directory -H --max-depth 1 | fzf) || exit
+    end
+
+    function c..
+        cd ..
+        set dir "$(fd --type directory -H --max-depth 1 .. | fzf)"
+        cd $dir || exit
+    end
+
+    abbr -a cdoc 'cd ~/Documents/'
+    abbr -a cdocs 'cd ~/Documents/'
+    abbr -a crepos 'cd ~/repos/'
+
+    function cproj
+        set dir "$HOME/repos/$(fd --type directory --max-depth 1 --base-directory $HOME/repos | fzf | sed 's/\.\///')"
+        set repo (echo $dir | sed 's/.*\///g')
+
         if set -q argv[1]
-          set num_tabs (math $argv[1] - 1)
+            set command "nt $argv[1]"
+        end
+
+        t $dir --command "$command"
+    end
+
+
+    # Tmux
+    function nt
+        if set -q argv[1]
+            set num_tabs (math $argv[1] - 1)
         else
-          set num_tabs 1
+            set num_tabs 1
         end
 
         set orig_win_idx $(tmux display-message -p '#I')
         for i in (seq 1 $num_tabs)
-          tmux new-window
+            tmux new-window
         end
         tmux select-window -t $orig_win_idx
-  end
+    end
 
-  abbr -a tconf 'nvim ~/.tmux.conf'
-  abbr -a tn 'tmux new-session -s (pwd | sed \'s/.*\///g\')'
-  abbr -a ta 'tmux attach'
-  abbr -a .t 'touch .t && chmod +x .t && echo -e "#!/usr/bin/env bash\n" > .t && nvim .t'
-  abbr -a tls 'tmux ls'
-  abbr -a tks 'tmux kill-server'
-
-
-  # Git
-  abbr -a gconf 'nvim ~/.gitconfig'
-  abbr -a g 'git'
-  abbr -a gd 'git diff'
-  abbr -a gcm 'git commit -m'
-  abbr -a gca 'git commit --amend'
-  abbr -a gco 'git checkout'
-  abbr -a ga 'git add'
-  abbr -a gap 'git add --patch'
+    abbr -a tconf 'nvim ~/.tmux.conf'
+    abbr -a tn 'tmux new-session -s (pwd | sed \'s/.*\///g\')'
+    abbr -a ta 'tmux attach'
+    abbr -a .t 'touch .t && chmod +x .t && echo -e "#!/usr/bin/env bash\n" > .t && nvim .t'
+    abbr -a tls 'tmux ls'
+    abbr -a tks 'tmux kill-server'
 
 
-  # Neovim
-  abbr -a v 'nvim'
-  abbr -a v. 'nvim .'
-  abbr -a v.f 'nvim $(fd --type file | fzf)'
-  abbr -a v.d 'cd $(fd --type directory | fzf) && nvim .'
+    # Git
+    abbr -a gconf 'nvim ~/.gitconfig'
+    abbr -a g 'git'
+    abbr -a gd 'git diff'
+    abbr -a gcm 'git commit -m'
+    abbr -a gca 'git commit --amend'
+    abbr -a gco 'git checkout'
+    abbr -a ga 'git add'
+    abbr -a gap 'git add --patch'
 
 
-  # Config files
-  abbr -a tconf 'nvim ~/.tmux.conf'
-  abbr -a gconf 'nvim ~/.gitconfig'
+    # Neovim
+    abbr -a v 'nvim'
+    abbr -a v. 'nvim .'
+    abbr -a v.f 'nvim $(fd --type file | fzf)'
+    abbr -a v.d 'cd $(fd --type directory | fzf) && nvim .'
 
 
-  # IntelliJ
-  function ip
-    set repo "$HOME/repos/$(fd --type directory --max-depth 1 --base-directory $HOME/repos | fzf)"
-    # TODO: Disown process after creating it
+    # Config files
+    abbr -a tconf 'nvim ~/.tmux.conf'
+    abbr -a gconf 'nvim ~/.gitconfig'
+
+
+    # IntelliJ
+    function ip
+        set repo "$HOME/repos/$(fd --type directory --max-depth 1 --base-directory $HOME/repos | fzf)"
+        # TODO: Disown process after creating it
         # There are still jobs active:
 
         #    PID  Command
         #   9060  idea.sh $repo > /dev/null 2>&1 &
 
         # A second attempt to exit will terminate them.
-    idea.sh $repo > /dev/null 2>&1 &
-  end
+        idea.sh $repo > /dev/null 2>&1 &
+    end
 
 
-  # Zoxide
-  function zd
+    # Zoxide
+    function zd
         set HOME_REPLACER "s|^$HOME/|~/|"
         set result (zoxide query -l | sed -e "$HOME_REPLACER" | fzf)
         set result (echo $result | sed 's/~/\/home\/jorge/')
         cd $result
-  end
+    end
 
-  function _z_cd
-      cd $argv
-      or return $status
+    function _z_cd
+        cd $argv
+        or return $status
 
-      commandline -f repaint
+        commandline -f repaint
 
-      if test "$_ZO_ECHO" = "1"
-          echo $PWD
-      end
-  end
+        if test "$_ZO_ECHO" = "1"
+            echo $PWD
+        end
+    end
 
-  function z
-      set argc (count $argv)
+    function z
+        set argc (count $argv)
 
-      if test $argc -eq 0
-          _z_cd $HOME
-      else if begin; test $argc -eq 1; and test $argv[1] = '-'; end
-          _z_cd -
-      else
-          set -l _zoxide_result (zoxide query -- $argv)
-          and _z_cd $_zoxide_result
-      end
-  end
+        if test $argc -eq 0
+            _z_cd $HOME
+        else if begin; test $argc -eq 1; and test $argv[1] = '-'; end
+            _z_cd -
+        else
+            set -l _zoxide_result (zoxide query -- $argv)
+            and _z_cd $_zoxide_result
+        end
+    end
 
-  function zi
-      set -l _zoxide_result (zoxide query -i -- $argv)
-      and _z_cd $_zoxide_result
-  end
+    function zi
+        set -l _zoxide_result (zoxide query -i -- $argv)
+        and _z_cd $_zoxide_result
+    end
 
-  function zri
-      set -l _zoxide_result (zoxide query -i -- $argv)
-      and zoxide remove $_zoxide_result
-  end
+    function zri
+        set -l _zoxide_result (zoxide query -i -- $argv)
+        and zoxide remove $_zoxide_result
+    end
 
-  function _zoxide_hook --on-variable PWD
-      zoxide add (pwd -L)
-  end
+    function _zoxide_hook --on-variable PWD
+        zoxide add (pwd -L)
+    end
 
-  abbr -a za 'zoxide add'
-  abbr -a zq 'zoxide query'
-  abbr -a zqi 'zoxide query -i'
-  abbr -a zr 'zoxide remove'
+    abbr -a za 'zoxide add'
+    abbr -a zq 'zoxide query'
+    abbr -a zqi 'zoxide query -i'
+    abbr -a zr 'zoxide remove'
 end
 
 # Path
