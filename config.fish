@@ -1,4 +1,6 @@
 if status is-interactive
+    # TODO: Add bitwig cloud sync script -> search and copy folders from google drive to bitwig folder
+
     # General/utility
     function c
         set curr_win_idx $(tmux display-message -p '#I')
