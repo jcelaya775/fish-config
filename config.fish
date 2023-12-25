@@ -93,7 +93,14 @@ if status is-interactive
   # IntelliJ
   function ip
     set repo "$HOME/repos/$(fd --type directory --max-depth 1 --base-directory $HOME/repos | fzf)"
-    idea $repo > /dev/null 2>&1 &
+    # TODO: Disown process after creating it
+        # There are still jobs active:
+
+        #    PID  Command
+        #   9060  idea.sh $repo > /dev/null 2>&1 &
+
+        # A second attempt to exit will terminate them.
+    idea.sh $repo > /dev/null 2>&1 &
   end
 
 
@@ -152,7 +159,8 @@ end
 # Path
 fish_add_path $HOME/.local/bin/
 fish_add_path $HOME/.tmux/plugins/t-smart-tmux-session-manager/bin/
-fish_add_path /opt/idea-IC-232.10227.8/bin
+fish_add_path /opt/idea-IC-233.13135.103/bin/
+xinput set-prop 13 "libinput Scrolling Pixel Distance" 300
 
 # Key bindings
 bind -M insert \ek kill-line
