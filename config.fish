@@ -166,7 +166,8 @@ end
 # Path
 fish_add_path $HOME/.local/bin/
 fish_add_path $HOME/.tmux/plugins/t-smart-tmux-session-manager/bin/
-fish_add_path /opt/idea-IC-233.13135.103/bin/
+fish_add_path /opt/idea-IC-232.10227.8/bin
+# fish_add_path $HOME/bin/gcc-arm-none-eabi-10.3-2021.10/
 
 # Key bindings
 bind -M insert \ek kill-line
