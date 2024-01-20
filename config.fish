@@ -8,7 +8,7 @@ if status is-interactive
         tmux clear-history -t $curr_win_idx
     end
 
-    abbr -a l "exa -l $argv"
+    abbr -a l "exa -l"
     abbr -a e 'exit'
     abbr -a ss 'systemctl suspend'
 
