@@ -3,6 +3,7 @@ if status is-interactive
 
     # General/utility
     function c
+        # TODO: Only do tmux stuff if in a tmux session
         set curr_win_idx $(tmux display-message -p '#I')
         clear
         tmux clear-history -t $curr_win_idx
@@ -11,6 +12,7 @@ if status is-interactive
     abbr -a l "exa -l"
     abbr -a e 'exit'
     abbr -a ss 'systemctl suspend'
+
 
     # Programs
     abbr -a n 'npm'
@@ -30,10 +32,6 @@ if status is-interactive
         cd $dir || exit
     end
 
-    abbr -a cdoc 'cd ~/Documents/'
-    abbr -a cdocs 'cd ~/Documents/'
-    abbr -a crepos 'cd ~/repos/'
-
     function cproj
         set dir "$HOME/repos/$(fd --type directory --max-depth 1 --base-directory $HOME/repos | fzf | sed 's/\.\///')"
         set repo (echo $dir | sed 's/.*\///g')
@@ -44,6 +42,10 @@ if status is-interactive
 
         t $dir --command "$command"
     end
+
+    abbr -a cdoc 'cd ~/Documents/'
+    abbr -a cdocs 'cd ~/Documents/'
+    abbr -a crepos 'cd ~/repos/'
 
 
     # Tmux
@@ -61,12 +63,6 @@ if status is-interactive
         tmux select-window -t $orig_win_idx
     end
 
-    abbr -a tconf 'nvim ~/.tmux.conf'
-    abbr -a tn 'tmux new-session -s (pwd | sed \'s/.*\///g\')'
-    abbr -a ta 'tmux attach'
-    abbr -a tls 'tmux ls'
-    abbr -a tks 'tmux kill-server'
-
     function .t
       if not test -e .t
         touch .t && chmod +x .t && echo -e "#!/usr/bin/env bash\n" > .t && nvim .t
@@ -74,6 +70,13 @@ if status is-interactive
         echo ".t already exists"
       end
     end
+
+    abbr -a tconf 'nvim ~/.tmux.conf'
+    abbr -a tn 'tmux new-session -s (pwd | sed \'s/.*\///g\')'
+    abbr -a ta 'tmux attach'
+    abbr -a tls 'tmux ls'
+    abbr -a tks 'tmux kill-server'
+
 
     # Git
     abbr -a gconf 'nvim ~/.gitconfig'
@@ -164,10 +167,12 @@ if status is-interactive
     abbr -a zr 'zoxide remove'
 end
 
+
 # Run configuration scripts (xinput stuff)
 for script in ~/scripts/*.sh
   $script
 end
+
 
 # Path
 fish_add_path $HOME/.local/bin/
@@ -175,11 +180,13 @@ fish_add_path $HOME/.tmux/plugins/t-smart-tmux-session-manager/bin/
 fish_add_path /opt/idea-IC-232.10227.8/bin
 # fish_add_path $HOME/bin/gcc-arm-none-eabi-10.3-2021.10/
 
+
 # Key bindings
 bind -M insert \ek kill-line
 bind -M insert \eu backward-kill-line
 bind -M insert \ec kill-whole-line
 bind -M visual -m default y 'fish_clipboard_copy; commandline -f end-selection repaint-mode'
+
 
 # Config
 set -gx COLORTERM truecolor
@@ -205,10 +212,10 @@ set -g theme_powerline_fonts yes
 set -g theme_nerd_fonts yes
 set -x T_REPOS_DIR $HOME/repos
 
+
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 if test -f /home/jorge/anaconda3/bin/conda
     eval /home/jorge/anaconda3/bin/conda "shell.fish" "hook" $argv | source
 end
 # <<< conda initialize <<<
-
