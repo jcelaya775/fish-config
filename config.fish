@@ -16,7 +16,7 @@ if status is-interactive
     abbr -a n 'npm'
     abbr -a y 'yarn'
     abbr -a pn 'pnpm'
-    abbr -a p 'python'
+    abbr -a p 'python3'
 
 
     # Directories
