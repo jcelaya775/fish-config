@@ -64,10 +64,16 @@ if status is-interactive
     abbr -a tconf 'nvim ~/.tmux.conf'
     abbr -a tn 'tmux new-session -s (pwd | sed \'s/.*\///g\')'
     abbr -a ta 'tmux attach'
-    abbr -a .t 'touch .t && chmod +x .t && echo -e "#!/usr/bin/env bash\n" > .t && nvim .t'
     abbr -a tls 'tmux ls'
     abbr -a tks 'tmux kill-server'
 
+    function .t
+      if not test -e .t
+        touch .t && chmod +x .t && echo -e "#!/usr/bin/env bash\n" > .t && nvim .t
+      else
+        echo ".t already exists"
+      end
+    end
 
     # Git
     abbr -a gconf 'nvim ~/.gitconfig'
@@ -197,6 +203,7 @@ set -g theme_display_date yes
 set -g theme_display_cmd_duration yes
 set -g theme_powerline_fonts yes
 set -g theme_nerd_fonts yes
+set -x T_REPOS_DIR $HOME/repos
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
