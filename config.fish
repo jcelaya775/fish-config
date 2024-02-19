@@ -9,6 +9,7 @@ if status is-interactive
         tmux clear-history -t $curr_win_idx
     end
 
+    abbr -a s "sudo"
     abbr -a l "exa -l"
     abbr -a e 'exit'
     abbr -a ss 'systemctl suspend'
@@ -169,16 +170,16 @@ end
 
 
 # Run configuration scripts (xinput stuff)
-for script in ~/scripts/*.sh
-  $script
-end
+# for script in ~/scripts/*.sh
+#   $script
+# end
 
 
 # Path
 fish_add_path $HOME/.local/bin/
 fish_add_path $HOME/.tmux/plugins/t-smart-tmux-session-manager/bin/
 fish_add_path /opt/idea-IC-232.10227.8/bin
-# fish_add_path $HOME/bin/gcc-arm-none-eabi-10.3-2021.10/
+fish_add_path $HOME/bin/gcc-arm-none-eabi-10.3-2021.10/
 
 
 # Key bindings
