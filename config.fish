@@ -103,7 +103,7 @@ if status is-interactive
 
 
     # IntelliJ
-    function ip
+    function iproj
         set repo "$HOME/repos/$(fd --type directory --max-depth 1 --base-directory $HOME/repos | fzf)"
         # TODO: Disown process after creating it
         # There are still jobs active:
