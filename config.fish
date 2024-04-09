@@ -84,7 +84,7 @@ if status is-interactive
     abbr -a gd 'git diff'
     abbr -a gcm 'git commit -m'
     abbr -a gca 'git commit --amend'
-    abbr -a gco 'git checkout'
+    abbr -a gco 'git checkout $(git branch | fzf | tr -d ‘[:space:]’)'
     abbr -a ga 'git add'
     abbr -a gap 'git add --patch'
 
@@ -179,6 +179,10 @@ fish_add_path $HOME/.local/bin/
 fish_add_path $HOME/.tmux/plugins/t-smart-tmux-session-manager/bin/
 fish_add_path /opt/idea-IC-232.10227.8/bin
 fish_add_path $HOME/bin/gcc-arm-none-eabi-10.3-2021.10/
+fish_add_path $HOME/go/bin
+fish_add_path $ANDROID_HOME/tools
+fish_add_path $ANDROID_HOME/emulator
+fish_add_path $ANDROID_HOME/platform-tools
 
 
 # Key bindings
@@ -219,3 +223,7 @@ if test -f /home/jorge/anaconda3/bin/conda
     eval /home/jorge/anaconda3/bin/conda "shell.fish" "hook" $argv | source
 end
 # <<< conda initialize <<<
+
+# bun
+set --export BUN_INSTALL "$HOME/.bun"
+set --export PATH $BUN_INSTALL/bin $PATH
