@@ -2,23 +2,20 @@ if status is-interactive
     # TODO: Add bitwig cloud sync script -> search and copy folders from google drive to bitwig folder
 
     # General/utility
-    function c
-        # TODO: Only do tmux stuff if in a tmux session
-        set curr_win_idx $(tmux display-message -p '#I')
-        clear
-        tmux clear-history -t $curr_win_idx
-    end
-
-    abbr -a l "exa -l"
+    abbr -a l 'lsd -l'
     abbr -a e 'exit'
-    abbr -a ss 'systemctl suspend'
+    abbr -a slp 'sudo shutdown -s now'
+    abbr -a icat 'kitten icat'
 
 
     # Programs
+    abbr -a s 'sesh connect (sesh list | fzf)'
+    abbr -a c 'set curr_win_idx $(tmux display-message -p \'#I\') && clear && tmux clear-history -t $curr_win_idx'
     abbr -a n 'npm'
     abbr -a y 'yarn'
     abbr -a pn 'pnpm'
-    abbr -a p 'python3'
+    abbr -a p 'python'
+    abbr -a ws 'webstorm'
 
 
     # Directories
@@ -72,7 +69,7 @@ if status is-interactive
     end
 
     abbr -a tconf 'nvim ~/.tmux.conf'
-    abbr -a tn 'tmux new-session -s (pwd | sed \'s/.*\///g\')'
+    abbr -a tn 'tmux new-session -s (pwd | sed \'s/.*\///g\')' # TODO: Fix sed \'s/.*\///g\' from being entered
     abbr -a ta 'tmux attach'
     abbr -a tls 'tmux ls'
     abbr -a tks 'tmux kill-server'
@@ -173,9 +170,9 @@ end
 #   $script
 # end
 
-
 # Path
 fish_add_path $HOME/.local/bin/
+fish_add_path /usr/local/bin
 fish_add_path $HOME/.tmux/plugins/t-smart-tmux-session-manager/bin/
 fish_add_path /opt/idea-IC-232.10227.8/bin
 fish_add_path $HOME/bin/gcc-arm-none-eabi-10.3-2021.10/
@@ -214,16 +211,31 @@ set -g theme_display_date yes
 set -g theme_display_cmd_duration yes
 set -g theme_powerline_fonts yes
 set -g theme_nerd_fonts yes
+
 set -x T_REPOS_DIR $HOME/repos
+set -x DYLD_LIBRARY_PATH /opt/homebrew/lib
 
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-if test -f /home/jorge/anaconda3/bin/conda
-    eval /home/jorge/anaconda3/bin/conda "shell.fish" "hook" $argv | source
+if test -f /opt/anaconda3/bin/conda
+    eval /opt/anaconda3/bin/conda "shell.fish" "hook" $argv | source
+else
+    if test -f "/opt/anaconda3/etc/fish/conf.d/conda.fish"
+        . "/opt/anaconda3/etc/fish/conf.d/conda.fish"
+    else
+        set -x PATH "/opt/anaconda3/bin" $PATH
+    end
 end
 # <<< conda initialize <<<
 
 # bun
 set --export BUN_INSTALL "$HOME/.bun"
 set --export PATH $BUN_INSTALL/bin $PATH
+
+# pnpm
+set -gx PNPM_HOME "/Users/jorge/Library/pnpm"
+if not string match -q -- $PNPM_HOME $PATH
+  set -gx PATH "$PNPM_HOME" $PATH
+end
+# pnpm end
