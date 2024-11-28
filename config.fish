@@ -9,14 +9,28 @@ if status is-interactive
 
 
     # Programs
-    abbr -a s 'sesh connect (sesh list | fzf)'
+    abbr -a s 'sudo'
     abbr -a c 'set curr_win_idx $(tmux display-message -p \'#I\') && clear && tmux clear-history -t $curr_win_idx'
     abbr -a n 'npm'
-    abbr -a y 'yarn'
+    # abbr -a y 'yarn'
     abbr -a pn 'pnpm'
     abbr -a p 'python'
-    abbr -a ws 'webstorm'
+    abbr -a ws 'sudo webstorm'
+    abbr -a pc 'sudo pycharm'
+    abbr -a gl 'sudo goland'
+    abbr -a rr 'sudo rustrover'
+    abbr -a cl 'sudo clion'
+    abbr -a dg 'sudo datagrip'
 
+    # Yazi
+    function y
+      set tmp (mktemp -t "yazi-cwd.XXXXXX")
+      yazi $argv --cwd-file="$tmp"
+      if set cwd (command cat -- "$tmp"); and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
+        builtin cd -- "$cwd"
+      end
+      rm -f -- "$tmp"
+    end
 
     # Directories
     function c.
@@ -165,27 +179,23 @@ if status is-interactive
 end
 
 
-# Run configuration scripts (xinput stuff)
-# for script in ~/scripts/*.sh
-#   $script
-# end
-
 # Path
 fish_add_path $HOME/.local/bin/
 fish_add_path /usr/local/bin
+fish_add_path $HOME/Applications/
 fish_add_path $HOME/.tmux/plugins/t-smart-tmux-session-manager/bin/
-fish_add_path /opt/idea-IC-232.10227.8/bin
+fish_add_path /opt/idea-IC-232.10227.8/bin/
 fish_add_path $HOME/bin/gcc-arm-none-eabi-10.3-2021.10/
-fish_add_path $HOME/go/bin
-fish_add_path $ANDROID_HOME/tools
-fish_add_path $ANDROID_HOME/emulator
-fish_add_path $ANDROID_HOME/platform-tools
+fish_add_path $HOME/go/bin/
+fish_add_path $ANDROID_HOME/tools/
+fish_add_path $ANDROID_HOME/emulator/
+fish_add_path $ANDROID_HOME/platform-tools/
 
 
 # Key bindings
-bind -M insert \ek kill-line
-bind -M insert \eu backward-kill-line
-bind -M insert \ec kill-whole-line
+bind -M insert \ek 'kill-line'
+bind -M insert \eu 'backward-kill-line'
+bind -M insert \ec 'kill-whole-line'
 bind -M visual -m default y 'fish_clipboard_copy; commandline -f end-selection repaint-mode'
 
 
@@ -212,8 +222,9 @@ set -g theme_display_cmd_duration yes
 set -g theme_powerline_fonts yes
 set -g theme_nerd_fonts yes
 
-set -x T_REPOS_DIR $HOME/repos
-set -x DYLD_LIBRARY_PATH /opt/homebrew/lib
+set -x T_REPOS_DIR $HOME/repos/
+set -x YAZI_CONFIG_HOME $HOME/.config/yazi/
+set -x DYLD_LIBRARY_PATH /opt/homebrew/lib/
 
 
 # >>> conda initialize >>>
