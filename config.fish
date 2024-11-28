@@ -196,7 +196,7 @@ fish_add_path $ANDROID_HOME/platform-tools/
 bind -M insert \ek 'kill-line'
 bind -M insert \eu 'backward-kill-line'
 bind -M insert \ec 'kill-whole-line'
-# bind -M insert \cy 'y'
+bind -M insert \cy 'y && tmux send-keys Enter'
 bind -M visual -m default y 'fish_clipboard_copy; commandline -f end-selection repaint-mode'
 
 
