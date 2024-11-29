@@ -2,7 +2,7 @@ if status is-interactive
     # TODO: Add bitwig cloud sync script -> search and copy folders from google drive to bitwig folder
 
     # General/utility
-    abbr -a l 'eza --long'
+    abbr -a l 'eza --color=always --long --git --no-time'
     abbr -a e 'exit'
     abbr -a slp 'sudo shutdown -s now'
     abbr -a icat 'kitten icat'
@@ -12,7 +12,7 @@ if status is-interactive
     abbr -a s 'sudo'
     abbr -a c 'set curr_win_idx $(tmux display-message -p \'#I\') && clear && tmux clear-history -t $curr_win_idx'
     abbr -a n 'npm'
-    # abbr -a y 'yarn'
+    abbr -a y 'yarn'
     abbr -a pn 'pnpm'
     abbr -a p 'python'
     abbr -a ws 'sudo webstorm'
@@ -30,6 +30,17 @@ if status is-interactive
         builtin cd -- "$cwd"
       end
       rm -f -- "$tmp"
+    end
+
+    # thefuck
+    function fk -d "Correct your previous console command"
+     set -l fucked_up_command $history[1]
+      env TF_SHELL=fish TF_ALIAS=fuck PYTHONIOENCODING=utf-8 thefuck $fucked_up_command THEFUCK_ARGUMENT_PLACEHOLDER $argv | read -l unfucked_command
+      if [ "$unfucked_command" != "" ]
+        eval $unfucked_command
+        builtin history delete --exact --case-sensitive -- $fucked_up_command
+        builtin history merge
+      end
     end
 
     # Directories
@@ -114,15 +125,16 @@ if status is-interactive
 
     # IntelliJ
     function iproj
-        set repo "$HOME/repos/$(fd --type directory --max-depth 1 --base-directory $HOME/repos | fzf)"
-        # TODO: Disown process after creating it
-        # There are still jobs active:
+          # TODO: Use above abbreviations & add other editors~
+          set repo "$HOME/repos/$(fd --type directory --max-depth 1 --base-directory $HOME/repos | fzf)"
+          # TODO: Disown process after creating it
+          # There are still jobs active:
 
-        #    PID  Command
-        #   9060  idea.sh $repo > /dev/null 2>&1 &
+          #    PID  Command
+          #   9060  idea.sh $repo > /dev/null 2>&1 &
 
-        # A second attempt to exit will terminate them.
-        idea.sh $repo > /dev/null 2>&1 &
+          # A second attempt to exit will terminate them.
+          idea.sh $repo > /dev/null 2>&1 &
     end
 
 
@@ -197,6 +209,7 @@ bind -M insert \ek 'kill-line'
 bind -M insert \eu 'backward-kill-line'
 bind -M insert \ec 'kill-whole-line'
 bind -M insert \cy 'y && tmux send-keys Enter'
+bind -M insert \cd ''
 bind -M visual -m default y 'fish_clipboard_copy; commandline -f end-selection repaint-mode'
 
 
