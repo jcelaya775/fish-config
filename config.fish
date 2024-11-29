@@ -130,7 +130,7 @@ if status is-interactive
     function zd
         set HOME_REPLACER "s|^$HOME/|~/|"
         set result (zoxide query -l | sed -e "$HOME_REPLACER" | fzf)
-        set result (echo $result | sed 's/~/\/home\/jorge/')
+        set result (echo $result | sed 's/~/\/Users\/jorge/')
         cd $result
     end
 
