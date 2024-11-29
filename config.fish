@@ -2,7 +2,7 @@ if status is-interactive
     # TODO: Add bitwig cloud sync script -> search and copy folders from google drive to bitwig folder
 
     # General/utility
-    abbr -a l 'lsd -l'
+    abbr -a l 'eza --long'
     abbr -a e 'exit'
     abbr -a slp 'sudo shutdown -s now'
     abbr -a icat 'kitten icat'
@@ -226,7 +226,6 @@ set -g theme_nerd_fonts yes
 set -x T_REPOS_DIR $HOME/repos/
 set -x YAZI_CONFIG_HOME $HOME/.config/yazi/
 set -x DYLD_LIBRARY_PATH /opt/homebrew/lib/
-
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
