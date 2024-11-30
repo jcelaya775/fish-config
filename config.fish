@@ -235,10 +235,10 @@ set -g theme_display_date yes
 set -g theme_display_cmd_duration yes
 set -g theme_powerline_fonts yes
 set -g theme_nerd_fonts yes
+set -g FZF_DEFAULT_OPTS '--cycle --layout=reverse --border --height=90% --preview-window=wrap --marker="*"'
 
 set -x T_REPOS_DIR $HOME/repos/
 set -x YAZI_CONFIG_HOME $HOME/.config/yazi/
-set -x DYLD_LIBRARY_PATH /opt/homebrew/lib/
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
