@@ -194,6 +194,7 @@ end
 # Path
 fish_add_path $HOME/.local/bin/
 fish_add_path /usr/local/bin
+fish_add_path $HOME/.local/share/nvm/v22.12.0/bin/node
 fish_add_path $HOME/Applications/
 fish_add_path $HOME/.tmux/plugins/t-smart-tmux-session-manager/bin/
 fish_add_path /opt/idea-IC-232.10227.8/bin/
@@ -203,13 +204,17 @@ fish_add_path $ANDROID_HOME/tools/
 fish_add_path $ANDROID_HOME/emulator/
 fish_add_path $ANDROID_HOME/platform-tools/
 
-
 # Key bindings
 bind -M insert \ek 'kill-line'
 bind -M insert \eu 'backward-kill-line'
 bind -M insert \ec 'kill-whole-line'
 bind -M insert \cy 'y && tmux send-keys Enter'
+bind -M default \cy 'y && tmux send-keys Enter'
 bind -M insert \cd ''
+# bind -M insert \co 'tmux send-keys prevd Enter'
+# bind -M default \co 'tmux send-keys prevd Enter'
+# bind -M insert \ci 'tmux send-keys nextd Enter'
+# bind -M default \ci 'tmux send-keys nextd Enter'
 bind -M visual -m default y 'fish_clipboard_copy; commandline -f end-selection repaint-mode'
 
 
