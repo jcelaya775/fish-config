@@ -138,23 +138,30 @@ if status is-interactive
     end
 
     # Git worktrees
+    # TODO(future): Add a new ^w option in sesh to connect to a worktree (consider how to handle
+    # opening the correct editor, it at all)
     function gwt
+        set original_dir $(pwd)
         switch $(pwd)
           case "$HOME/repos/*"
             set repo_dir "$HOME/repos/$(pwd | sed 's/\/Users\/jorge\/repos\///' | sed 's/\/.*//')"
         end
         if not set -q repo_dir
-            set worktree_repos ""
             set repo_candidates $(fd --type directory --max-depth 1 --base-directory $HOME/repos | string trim -c '/')
             for candidate in $repo_candidates
                 cd $HOME/repos/$candidate
-                if test -d ./worktrees/
+                if test -d ./worktrees
                   set -a worktree_repos $candidate
                 end
             end
-            set repo_name $(echo $worktree_repos | fzf --header "repos" | string trim -c '/ ')
+            set repo_name $(printf "%s\n" $worktree_repos | fzf --header "repos" | string trim -c '/')
             set repo_name "$(echo $repo_name | sed 's/\/Users\/jorge\/repos\///' | sed 's/\/.*//')"
             set repo_dir "$HOME/repos/$repo_name"
+        end
+        cd $original_dir
+
+        if test $repo_dir = "$HOME/repos/"
+            return
         end
 
         set branch (git -C $repo_dir branch | fzf --header "branches" | tr -d '[:space:]')
@@ -163,6 +170,7 @@ if status is-interactive
         echo "$worktree_dir"
     end
 
+    # TODO(yabai): Make sure windows are focused after opening the editor
     function wgwt
         set worktree_dir $(gwt)
         sudo webstorm $worktree_dir
@@ -199,16 +207,19 @@ if status is-interactive
         sesh connect $worktree_dir
     end
 
+    # Need to make sure currently on a branch/worktree to branch off of
     function gwta
         # If inside a git worktree and provided branch already exists, create a new worktree (if it
         # doesn't already exist) and switch to it (w/ provided editor -> allow user to fzf select~)
+        # if test -d .git/worktrees/
+
 
         # If branch exists -> create new worktree (verify it doesn't exist, or does git do this?)
         # and switch to it
         # Else -> create new branch off of current branch (if in current branch, else exit) and
         # create new worktree
 
-        # git -C $repo worktree add -b $branch $repo/$branch # TODO: move to gwta
+        # git -C $repo worktree add -b $branch $repo/$branch
     end
 
     # Zoxide
