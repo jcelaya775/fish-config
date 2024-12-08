@@ -137,6 +137,79 @@ if status is-interactive
           idea.sh $repo > /dev/null 2>&1 &
     end
 
+    # Git worktrees
+    function gwt
+        switch $(pwd)
+          case "$HOME/repos/*"
+            set repo_dir "$HOME/repos/$(pwd | sed 's/\/Users\/jorge\/repos\///' | sed 's/\/.*//')"
+        end
+        if not set -q repo_dir
+            set worktree_repos ""
+            set repo_candidates $(fd --type directory --max-depth 1 --base-directory $HOME/repos | string trim -c '/')
+            for candidate in $repo_candidates
+                cd $HOME/repos/$candidate
+                if test -d ./worktrees/
+                  set -a worktree_repos $candidate
+                end
+            end
+            set repo_name $(echo $worktree_repos | fzf --header "repos" | string trim -c '/ ')
+            set repo_name "$(echo $repo_name | sed 's/\/Users\/jorge\/repos\///' | sed 's/\/.*//')"
+            set repo_dir "$HOME/repos/$repo_name"
+        end
+
+        set branch (git -C $repo_dir branch | fzf --header "branches" | tr -d '[:space:]')
+        set branch $(echo $branch | tr -d " \t\n\r" | string trim -c '+*' | xargs)
+        set worktree_dir "$repo_dir/$branch"
+        echo "$worktree_dir"
+    end
+
+    function wgwt
+        set worktree_dir $(gwt)
+        sudo webstorm $worktree_dir
+        sesh connect $worktree_dir
+    end
+
+    function ggwt
+        set worktree_dir $(gwt)
+        sudo goland $worktree_dir
+        sesh connect $worktree_dir
+    end
+
+    function pgwt
+        set worktree_dir $(gwt)
+        sudo pycharm $worktree_dir
+        sesh connect $worktree_dir
+    end
+
+    function rgwt
+        set worktree_dir $(gwt)
+        sudo rustrover $worktree_dir
+        sesh connect $worktree_dir
+    end
+
+    function cgwt
+        set worktree_dir $(gwt)
+        sudo clion $worktree_dir
+        sesh connect $worktree_dir
+    end
+
+    function dgwt
+        set worktree_dir $(gwt)
+        sudo datagrip $worktree_dir
+        sesh connect $worktree_dir
+    end
+
+    function gwta
+        # If inside a git worktree and provided branch already exists, create a new worktree (if it
+        # doesn't already exist) and switch to it (w/ provided editor -> allow user to fzf select~)
+
+        # If branch exists -> create new worktree (verify it doesn't exist, or does git do this?)
+        # and switch to it
+        # Else -> create new branch off of current branch (if in current branch, else exit) and
+        # create new worktree
+
+        # git -C $repo worktree add -b $branch $repo/$branch # TODO: move to gwta
+    end
 
     # Zoxide
     function zd
