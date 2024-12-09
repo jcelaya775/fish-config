@@ -45,13 +45,13 @@ if status is-interactive
 
     # Directories
     function c.
-        cd $(fd --type directory -H --max-depth 1 | fzf) || exit
+        cd $(fd --type directory -H --max-depth 1 | fzf) || return
     end
 
     function c..
         cd ..
         set dir "$(fd --type directory -H --max-depth 1 .. | fzf)"
-        cd $dir || exit
+        cd $dir || return
     end
 
     function cproj
@@ -123,54 +123,58 @@ if status is-interactive
     abbr -a gconf 'nvim ~/.gitconfig'
 
 
-    # IntelliJ
-    function iproj
-          # TODO: Use above abbreviations & add other editors~
-          set repo "$HOME/repos/$(fd --type directory --max-depth 1 --base-directory $HOME/repos | fzf)"
-          # TODO: Disown process after creating it
-          # There are still jobs active:
-
-          #    PID  Command
-          #   9060  idea.sh $repo > /dev/null 2>&1 &
-
-          # A second attempt to exit will terminate them.
-          idea.sh $repo > /dev/null 2>&1 &
-    end
-
     # Git worktrees
     # TODO(future): Add a new ^w option in sesh to connect to a worktree (consider how to handle
-    # opening the correct editor, it at all)
+    # opening the correct editor, if at all)
     function gwt
-        set original_dir $(pwd)
+        # TODO: Add support for remote branches
         switch $(pwd)
           case "$HOME/repos/*"
             set repo_dir "$HOME/repos/$(pwd | sed 's/\/Users\/jorge\/repos\///' | sed 's/\/.*//')"
+            if not test -d $repo_dir/worktrees
+                set -e repo_dir
+            end
         end
         if not set -q repo_dir
+            set original_dir $(pwd)
             set repo_candidates $(fd --type directory --max-depth 1 --base-directory $HOME/repos | string trim -c '/')
-            for candidate in $repo_candidates
-                cd $HOME/repos/$candidate
+            for repo in $repo_candidates
+                cd $HOME/repos/$repo
                 if test -d ./worktrees
-                  set -a worktree_repos $candidate
+                  set -a worktree_repos $repo
                 end
             end
+            cd $original_dir
             set repo_name $(printf "%s\n" $worktree_repos | fzf --header "repos" | string trim -c '/')
             set repo_name "$(echo $repo_name | sed 's/\/Users\/jorge\/repos\///' | sed 's/\/.*//')"
             set repo_dir "$HOME/repos/$repo_name"
         end
-        cd $original_dir
 
-        if test $repo_dir = "$HOME/repos/"
+        if not set -q repo_dir || test $repo_dir = "$HOME/repos/" || test -z $repo_dir
             return
         end
 
-        set branch (git -C $repo_dir branch | fzf --header "branches" | tr -d '[:space:]')
-        set branch $(echo $branch | tr -d " \t\n\r" | string trim -c '+*' | xargs)
+        if set -q argv[1]
+            set branch $(echo $argv[1] | xargs)
+            set worktree_search_result $(git -C $repo_dir worktree list | tail -n +2 | awk '{print $1}' \
+                                        | sed 's/\/Users\/jorge\/repos\/'"$repo_name"'\///' \
+                                        | rg ^$argv[1]\$)
+            if not test -z $worktree_search_result
+                set branch $(echo $argv[1] | xargs)
+            else
+                echo "No work-tree exists for branch \"$branch\""
+                set -e branch
+            end
+        else
+            set branch $(git -C $repo_dir branch | fzf --header "branches" | tr -d '[:space:]')
+            set branch $(echo $branch | tr -d " \t\n\r" | string trim -c '+*' | xargs)
+        end
         set worktree_dir "$repo_dir/$branch"
-        echo "$worktree_dir"
+        if not test -z $repo_dir && not test -z $branch
+          echo "$worktree_dir"
+        end
     end
 
-    # TODO(yabai): Make sure windows are focused after opening the editor
     function wgwt
         set worktree_dir $(gwt)
         sudo webstorm $worktree_dir
@@ -207,19 +211,158 @@ if status is-interactive
         sesh connect $worktree_dir
     end
 
-    # Need to make sure currently on a branch/worktree to branch off of
     function gwta
-        # If inside a git worktree and provided branch already exists, create a new worktree (if it
-        # doesn't already exist) and switch to it (w/ provided editor -> allow user to fzf select~)
-        # if test -d .git/worktrees/
+        set branch $argv[1]
 
+        if test $(git rev-parse --is-inside-work-tree) != "true" && not test -d ./worktrees
+            echo "Not inside a git work-tree"
+            return
+        end
 
-        # If branch exists -> create new worktree (verify it doesn't exist, or does git do this?)
-        # and switch to it
-        # Else -> create new branch off of current branch (if in current branch, else exit) and
-        # create new worktree
+        set repo_name $(pwd | sed 's/\/Users\/jorge\/repos\///' | sed 's/\/.*//')
 
-        # git -C $repo worktree add -b $branch $repo/$branch
+        if test -z $branch
+            # NOTE: fzf doesn't show remote branches
+            for b in $(git branch)
+                if test -z $(echo $b | string match -r '^\+|\*')
+                    set -a branches $(echo $b | string trim -c '+* ')
+                end
+            end
+
+            if not set -q branches
+                echo "No branches available"
+                return
+            end
+            set branch $(printf "%s\n" $branches | fzf --header "branches" | xargs)
+        end
+
+        if test -z $branch
+            return
+        end
+
+        set branch $(echo $branch | string trim -c '+* ' | xargs)
+        set worktree_dir "$HOME/repos/$repo_name/$branch"
+        set branch_search_result $(git branch | string trim -c '+* ' | rg ^$branch\$)
+        if not test -z $branch_search_result
+            set worktree_search_result $(git worktree list | tail -n +2 | awk '{print $1}' \
+                                        | sed 's/\/Users\/jorge\/repos\/'"$repo_name"'\///' \
+                                        | rg ^$branch\$)
+            if not test -z $worktree_search_result
+                echo "Work-tree already exists"
+            else
+                git worktree add $worktree_dir --checkout $branch &> /dev/null
+                echo "$worktree_dir"
+            end
+        else
+            git fetch origin $branch:$branch &> /dev/null
+            if test $status -eq 0
+                git worktree add $worktree_dir --checkout $branch &> /dev/null
+                echo "$worktree_dir"
+            else
+                git worktree add $worktree_dir -b $branch &> /dev/null
+                echo "$worktree_dir"
+            end
+        end
+    end
+
+    function wgwta
+        set worktree_dir $(gwta $argv[1])
+        if test $worktree_dir = "Work-tree already exists"
+            echo "$worktree_dir"
+            return
+        end
+        sudo webstorm $worktree_dir
+        sesh connect $worktree_dir
+    end
+
+    function ggwta
+        set worktree_dir $(gwta $argv[1])
+        if test $worktree_dir = "Work-tree already exists"
+            echo "$worktree_dir"
+            return
+          end
+        sudo goland $worktree_dir
+        sesh connect $worktree_dir
+    end
+
+    function pgwta
+        set worktree_dir $(gwta $argv[1])
+        if test $worktree_dir = "Work-tree already exists"
+            echo "$worktree_dir"
+            return
+          end
+        sudo pycharm $worktree_dir
+        sesh connect $worktree_dir
+    end
+
+    function rgwta
+        set worktree_dir $(gwta $argv[1])
+        if test $worktree_dir = "Work-tree already exists"
+            echo "$worktree_dir"
+            return
+          end
+        sudo rustrover $worktree_dir
+        sesh connect $worktree_dir
+    end
+
+    function cgwta
+        set worktree_dir $(gwta $argv[1])
+        if test $worktree_dir = "Work-tree already exists"
+            echo "$worktree_dir"
+            return
+          end
+        sudo clion $worktree_dir
+        sesh connect $worktree_dir
+    end
+
+    function dgwta
+        set worktree_dir $(gwta $argv[1])
+        if test $worktree_dir = "Work-tree already exists"
+            echo "$worktree_dir"
+            return
+          end
+        sudo datagrip $worktree_dir
+        sesh connect $worktree_dir
+    end
+
+    function gwtrm
+        set branch $argv[1]
+
+        if test $(git rev-parse --is-inside-work-tree) != "true" && not test -d ./worktrees
+            echo "Not inside a git work-tree"
+            return
+        end
+
+        set repo_name $(pwd | sed 's/\/Users\/jorge\/repos\///' | sed 's/\/.*//')
+
+        if test -z $branch
+            # NOTE: fzf doesn't show remote branches
+            for b in $(git branch)
+                if test -z $(echo $b | string match -r '^\+|\*')
+                    set -a branches $(echo $b | string trim -c '+* ')
+                end
+            end
+
+            if not set -q branches
+                echo "No branches available"
+                return
+            end
+            set branch $(printf "%s\n" $branches | fzf --header "branches" | xargs)
+        end
+
+        if test -z $branch
+            return
+        end
+
+        set branch $(echo $branch | string trim -c '+* ' | xargs)
+        set worktree_dir "$HOME/repos/$repo_name/$branch"
+        set branch_search_result $(git branch | string trim -c '+* ' | rg ^$branch\$)
+        if not test -z $branch_search_result
+            git worktree remove -f $worktree_dir
+            echo "Removed work-tree for branch \"$branch\""
+        else
+            echo "No work-tree exists for branch \"$branch\""
+        end
     end
 
     # Zoxide
