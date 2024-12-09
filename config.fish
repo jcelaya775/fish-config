@@ -3,18 +3,18 @@ if status is-interactive
 
     # General/utility
     abbr -a l 'eza --color=always --long --git --no-time'
-    abbr -a e 'exit'
+    abbr -a e exit
     abbr -a slp 'sudo shutdown -s now'
     abbr -a icat 'kitten icat'
 
 
     # Programs
-    abbr -a s 'sudo'
+    abbr -a s sudo
     abbr -a c 'set curr_win_idx $(tmux display-message -p \'#I\') && clear && tmux clear-history -t $curr_win_idx'
-    abbr -a n 'npm'
-    abbr -a y 'yarn'
-    abbr -a pn 'pnpm'
-    abbr -a p 'python'
+    abbr -a n npm
+    abbr -a y yarn
+    abbr -a pn pnpm
+    abbr -a p python
     abbr -a ws 'sudo webstorm'
     abbr -a pc 'sudo pycharm'
     abbr -a gl 'sudo goland'
@@ -24,23 +24,23 @@ if status is-interactive
 
     # Yazi
     function y
-      set tmp (mktemp -t "yazi-cwd.XXXXXX")
-      yazi $argv --cwd-file="$tmp"
-      if set cwd (command cat -- "$tmp"); and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
-        builtin cd -- "$cwd"
-      end
-      rm -f -- "$tmp"
+        set tmp (mktemp -t "yazi-cwd.XXXXXX")
+        yazi $argv --cwd-file="$tmp"
+        if set cwd (command cat -- "$tmp"); and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
+            builtin cd -- "$cwd"
+        end
+        rm -f -- "$tmp"
     end
 
     # thefuck
     function fk -d "Correct your previous console command"
-     set -l fucked_up_command $history[1]
-      env TF_SHELL=fish TF_ALIAS=fuck PYTHONIOENCODING=utf-8 thefuck $fucked_up_command THEFUCK_ARGUMENT_PLACEHOLDER $argv | read -l unfucked_command
-      if [ "$unfucked_command" != "" ]
-        eval $unfucked_command
-        builtin history delete --exact --case-sensitive -- $fucked_up_command
-        builtin history merge
-      end
+        set -l fucked_up_command $history[1]
+        env TF_SHELL=fish TF_ALIAS=fuck PYTHONIOENCODING=utf-8 thefuck $fucked_up_command THEFUCK_ARGUMENT_PLACEHOLDER $argv | read -l unfucked_command
+        if [ "$unfucked_command" != "" ]
+            eval $unfucked_command
+            builtin history delete --exact --case-sensitive -- $fucked_up_command
+            builtin history merge
+        end
     end
 
     # Directories
@@ -86,11 +86,11 @@ if status is-interactive
     end
 
     function .t
-      if not test -e .t
-        touch .t && chmod +x .t && echo -e "#!/usr/bin/env bash\n" > .t && nvim .t
-      else
-        echo ".t already exists"
-      end
+        if not test -e .t
+            touch .t && chmod +x .t && echo -e "#!/usr/bin/env bash\n" >.t && nvim .t
+        else
+            echo ".t already exists"
+        end
     end
 
     abbr -a tconf 'nvim ~/.tmux.conf'
@@ -102,7 +102,7 @@ if status is-interactive
 
     # Git
     abbr -a gconf 'nvim ~/.gitconfig'
-    abbr -a g 'git'
+    abbr -a g git
     abbr -a gd 'git diff'
     abbr -a gcm 'git commit -m'
     abbr -a gca 'git commit --amend'
@@ -112,7 +112,7 @@ if status is-interactive
 
 
     # Neovim
-    abbr -a v 'nvim'
+    abbr -a v nvim
     abbr -a v. 'nvim .'
     abbr -a v.f 'nvim $(fd --type file | fzf)'
     abbr -a v.d 'cd $(fd --type directory | fzf) && nvim .'
@@ -129,11 +129,11 @@ if status is-interactive
     function gwt
         # TODO: Add support for remote branches
         switch $(pwd)
-          case "$HOME/repos/*"
-            set repo_dir "$HOME/repos/$(pwd | sed 's/\/Users\/jorge\/repos\///' | sed 's/\/.*//')"
-            if not test -d $repo_dir/worktrees
-                set -e repo_dir
-            end
+            case "$HOME/repos/*"
+                set repo_dir "$HOME/repos/$(pwd | sed 's/\/Users\/jorge\/repos\///' | sed 's/\/.*//')"
+                if not test -d $repo_dir/worktrees
+                    set -e repo_dir
+                end
         end
         if not set -q repo_dir
             set original_dir $(pwd)
@@ -141,7 +141,7 @@ if status is-interactive
             for repo in $repo_candidates
                 cd $HOME/repos/$repo
                 if test -d ./worktrees
-                  set -a worktree_repos $repo
+                    set -a worktree_repos $repo
                 end
             end
             cd $original_dir
@@ -171,7 +171,7 @@ if status is-interactive
         end
         set worktree_dir "$repo_dir/$branch"
         if not test -z $repo_dir && not test -z $branch
-          echo "$worktree_dir"
+            echo "$worktree_dir"
         end
     end
 
@@ -214,14 +214,14 @@ if status is-interactive
     function gwta
         set branch $argv[1]
 
-        if test $(git rev-parse --is-inside-work-tree) != "true" && not test -d ./worktrees
+        if test $(git rev-parse --is-inside-work-tree) != true && not test -d ./worktrees
             echo "Not inside a git work-tree"
             return
         end
 
         set repo_name $(pwd | sed 's/\/Users\/jorge\/repos\///' | sed 's/\/.*//')
 
-        if test -z $branch
+        if test -z "$branch"
             # NOTE: fzf doesn't show remote branches
             for b in $(git branch)
                 if test -z $(echo $b | string match -r '^\+|\*')
@@ -236,30 +236,30 @@ if status is-interactive
             set branch $(printf "%s\n" $branches | fzf --header "branches" | xargs)
         end
 
-        if test -z $branch
+        if test -z "$branch"
             return
         end
 
         set branch $(echo $branch | string trim -c '+* ' | xargs)
         set worktree_dir "$HOME/repos/$repo_name/$branch"
         set branch_search_result $(git branch | string trim -c '+* ' | rg ^$branch\$)
-        if not test -z $branch_search_result
+        if not test -z "$branch_search_result"
             set worktree_search_result $(git worktree list | tail -n +2 | awk '{print $1}' \
                                         | sed 's/\/Users\/jorge\/repos\/'"$repo_name"'\///' \
                                         | rg ^$branch\$)
-            if not test -z $worktree_search_result
+            if not test -z "$worktree_search_result"
                 echo "Work-tree already exists"
             else
-                git worktree add $worktree_dir --checkout $branch &> /dev/null
+                git worktree add $worktree_dir --checkout $branch &>/dev/null
                 echo "$worktree_dir"
             end
         else
-            git fetch origin $branch:$branch &> /dev/null
+            git fetch origin $branch:$branch &>/dev/null
             if test $status -eq 0
-                git worktree add $worktree_dir --checkout $branch &> /dev/null
+                git worktree add $worktree_dir --checkout $branch &>/dev/null
                 echo "$worktree_dir"
             else
-                git worktree add $worktree_dir -b $branch &> /dev/null
+                git worktree add $worktree_dir -b $branch &>/dev/null
                 echo "$worktree_dir"
             end
         end
@@ -280,7 +280,7 @@ if status is-interactive
         if test $worktree_dir = "Work-tree already exists"
             echo "$worktree_dir"
             return
-          end
+        end
         sudo goland $worktree_dir
         sesh connect $worktree_dir
     end
@@ -290,7 +290,7 @@ if status is-interactive
         if test $worktree_dir = "Work-tree already exists"
             echo "$worktree_dir"
             return
-          end
+        end
         sudo pycharm $worktree_dir
         sesh connect $worktree_dir
     end
@@ -300,7 +300,7 @@ if status is-interactive
         if test $worktree_dir = "Work-tree already exists"
             echo "$worktree_dir"
             return
-          end
+        end
         sudo rustrover $worktree_dir
         sesh connect $worktree_dir
     end
@@ -310,7 +310,7 @@ if status is-interactive
         if test $worktree_dir = "Work-tree already exists"
             echo "$worktree_dir"
             return
-          end
+        end
         sudo clion $worktree_dir
         sesh connect $worktree_dir
     end
@@ -320,7 +320,7 @@ if status is-interactive
         if test $worktree_dir = "Work-tree already exists"
             echo "$worktree_dir"
             return
-          end
+        end
         sudo datagrip $worktree_dir
         sesh connect $worktree_dir
     end
@@ -328,36 +328,33 @@ if status is-interactive
     function gwtrm
         set branch $argv[1]
 
-        if test $(git rev-parse --is-inside-work-tree) != "true" && not test -d ./worktrees
+        if test $(git rev-parse --is-inside-work-tree) != true && not test -d ./worktrees
             echo "Not inside a git work-tree"
             return
         end
 
         set repo_name $(pwd | sed 's/\/Users\/jorge\/repos\///' | sed 's/\/.*//')
 
-        if test -z $branch
-            # NOTE: fzf doesn't show remote branches
+        if test -z "$branch"
             for b in $(git branch)
-                if test -z $(echo $b | string match -r '^\+|\*')
-                    set -a branches $(echo $b | string trim -c '+* ')
-                end
+                set -a branches $(echo $b)
             end
 
             if not set -q branches
                 echo "No branches available"
                 return
             end
-            set branch $(printf "%s\n" $branches | fzf --header "branches" | xargs)
+            set branch $(printf "%s\n" $branches | fzf --header "branches" | string trim -c '+* ' | xargs)
         end
 
-        if test -z $branch
+        if test -z "$branch"
             return
         end
 
         set branch $(echo $branch | string trim -c '+* ' | xargs)
         set worktree_dir "$HOME/repos/$repo_name/$branch"
         set branch_search_result $(git branch | string trim -c '+* ' | rg ^$branch\$)
-        if not test -z $branch_search_result
+        if not test -z "$branch_search_result"
             git worktree remove -f $worktree_dir
             echo "Removed work-tree for branch \"$branch\""
         else
@@ -379,7 +376,7 @@ if status is-interactive
 
         commandline -f repaint
 
-        if test "$_ZO_ECHO" = "1"
+        if test "$_ZO_ECHO" = 1
             echo $PWD
         end
     end
@@ -389,7 +386,9 @@ if status is-interactive
 
         if test $argc -eq 0
             _z_cd $HOME
-        else if begin; test $argc -eq 1; and test $argv[1] = '-'; end
+        else if begin
+                test $argc -eq 1; and test $argv[1] = -
+            end
             _z_cd -
         else
             set -l _zoxide_result (zoxide query -- $argv)
@@ -432,9 +431,9 @@ fish_add_path $ANDROID_HOME/emulator/
 fish_add_path $ANDROID_HOME/platform-tools/
 
 # Key bindings
-bind -M insert \ek 'kill-line'
-bind -M insert \eu 'backward-kill-line'
-bind -M insert \ec 'kill-whole-line'
+bind -M insert \ek kill-line
+bind -M insert \eu backward-kill-line
+bind -M insert \ec kill-whole-line
 bind -M insert \cy 'y && tmux send-keys Enter'
 bind -M default \cy 'y && tmux send-keys Enter'
 bind -M insert \cd ''
@@ -475,12 +474,12 @@ set -x YAZI_CONFIG_HOME $HOME/.config/yazi/
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 if test -f /opt/anaconda3/bin/conda
-    eval /opt/anaconda3/bin/conda "shell.fish" "hook" $argv | source
+    eval /opt/anaconda3/bin/conda "shell.fish" hook $argv | source
 else
     if test -f "/opt/anaconda3/etc/fish/conf.d/conda.fish"
         . "/opt/anaconda3/etc/fish/conf.d/conda.fish"
     else
-        set -x PATH "/opt/anaconda3/bin" $PATH
+        set -x PATH /opt/anaconda3/bin $PATH
     end
 end
 # <<< conda initialize <<<
@@ -490,8 +489,10 @@ set --export BUN_INSTALL "$HOME/.bun"
 set --export PATH $BUN_INSTALL/bin $PATH
 
 # pnpm
-set -gx PNPM_HOME "/Users/jorge/Library/pnpm"
+set -gx PNPM_HOME /Users/jorge/Library/pnpm
 if not string match -q -- $PNPM_HOME $PATH
-  set -gx PATH "$PNPM_HOME" $PATH
+    # pnpm end
+    # pnpm end
+    se-gx PATH "$PNPM_HOME" $PATH
 end
 # pnpm end
