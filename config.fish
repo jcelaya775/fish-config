@@ -124,50 +124,58 @@ if status is-interactive
 
 
     # Git worktrees
-    # TODO(future): Add a new ^w option in sesh to connect to a worktree (consider how to handle
-    # opening the correct editor, if at all)
     function gwt
         # TODO: Add support for remote branches
         switch $(pwd)
             case "$HOME/repos/*"
-                set repo_dir "$HOME/repos/$(pwd | sed 's/\/Users\/jorge\/repos\///' | sed 's/\/.*//')"
-                if not test -d $repo_dir/worktrees
-                    set -e repo_dir
+                if test -d $repo_dir/worktrees
+                    set repo_dir "$HOME/repos/$(pwd | sed 's/\/Users\/jorge\/repos\///' | sed 's/\/.*//')"
                 end
         end
         if not set -q repo_dir
-            set original_dir $(pwd)
             set repo_candidates $(fd --type directory --max-depth 1 --base-directory $HOME/repos | string trim -c '/')
             for repo in $repo_candidates
-                cd $HOME/repos/$repo
-                if test -d ./worktrees
+                if test -d $HOME/repos/$repo/worktrees
                     set -a worktree_repos $repo
                 end
             end
-            cd $original_dir
-            set repo_name $(printf "%s\n" $worktree_repos | fzf --header "repos" | string trim -c '/')
-            set repo_name "$(echo $repo_name | sed 's/\/Users\/jorge\/repos\///' | sed 's/\/.*//')"
+            set repo_name $(printf "%s\n" $worktree_repos | fzf --header "repos" | string trim -c '/' \
+                          | sed 's/\/Users\/jorge\/repos\///' | sed 's/\/.*//')
             set repo_dir "$HOME/repos/$repo_name"
         end
 
         if not set -q repo_dir || test $repo_dir = "$HOME/repos/" || test -z $repo_dir
             return
         end
+        if test -z $repo_name
+            set repo_name $(pwd | sed 's/\/Users\/jorge\/repos\///' | sed 's/\/.*//')
+        end
 
         if set -q argv[1]
             set branch $(echo $argv[1] | xargs)
-            set worktree_search_result $(git -C $repo_dir worktree list | tail -n +2 | awk '{print $1}' \
-                                        | sed 's/\/Users\/jorge\/repos\/'"$repo_name"'\///' \
-                                        | rg ^$argv[1]\$)
-            if not test -z $worktree_search_result
-                set branch $(echo $argv[1] | xargs)
-            else
-                echo "No work-tree exists for branch \"$branch\""
-                set -e branch
+            set branch_search_result $(git -C $repo_dir branch | string trim -c '+* ' | rg ^$branch\$)
+            if test -z "$branch_search_result"
+                return
             end
         else
-            set branch $(git -C $repo_dir branch | fzf --header "branches" | tr -d '[:space:]')
-            set branch $(echo $branch | tr -d " \t\n\r" | string trim -c '+*' | xargs)
+            set branch $(git -C $repo_dir branch | fzf --header "branches" | tr -d '[:space:]' \
+                        | tr -d " \t\n\r" | string trim -c '+*' | xargs)
+        end
+
+        if test -z "$branch"
+            return
+        end
+
+        set worktree_search_result $(git -C $repo_dir worktree list | tail -n +2 | awk '{print $1}' \
+                                    | sed 's/\/Users\/jorge\/repos\/'"$repo_name"'\///' \
+                                    | rg ^$branch\$)
+        if not test -z $worktree_search_result
+            set branch $(echo $argv[1] | xargs)
+        else
+            set original_dir $(pwd)
+            cd $repo_dir
+            gwta $branch &>/dev/null
+            cd $original_dir
         end
         set worktree_dir "$repo_dir/$branch"
         if not test -z $repo_dir && not test -z $branch
@@ -177,6 +185,7 @@ if status is-interactive
 
     function wgwt
         set worktree_dir $(gwt)
+        echo "worktree_dir: $worktree_dir"
         sudo webstorm $worktree_dir
         sesh connect $worktree_dir
     end
@@ -267,6 +276,9 @@ if status is-interactive
 
     function wgwta
         set worktree_dir $(gwta $argv[1])
+        if test -z $worktree_dir
+            return
+        end
         if test $worktree_dir = "Work-tree already exists"
             echo "$worktree_dir"
             return
@@ -286,6 +298,9 @@ if status is-interactive
 
     function ggwta
         set worktree_dir $(gwta $argv[1])
+        if test -z $worktree_dir
+            return
+        end
         if test $worktree_dir = "Work-tree already exists"
             echo "$worktree_dir"
             return
@@ -305,6 +320,9 @@ if status is-interactive
 
     function pgwta
         set worktree_dir $(gwta $argv[1])
+        if test -z $worktree_dir
+            return
+        end
         if test $worktree_dir = "Work-tree already exists"
             echo "$worktree_dir"
             return
@@ -324,6 +342,9 @@ if status is-interactive
 
     function rgwta
         set worktree_dir $(gwta $argv[1])
+        if test -z $worktree_dir
+            return
+        end
         if test $worktree_dir = "Work-tree already exists"
             echo "$worktree_dir"
             return
@@ -343,6 +364,9 @@ if status is-interactive
 
     function cgwta
         set worktree_dir $(gwta $argv[1])
+        if test -z $worktree_dir
+            return
+        end
         if test $worktree_dir = "Work-tree already exists"
             echo "$worktree_dir"
             return
@@ -362,6 +386,9 @@ if status is-interactive
 
     function dgwta
         set worktree_dir $(gwta $argv[1])
+        if test -z $worktree_dir
+            return
+        end
         if test $worktree_dir = "Work-tree already exists"
             echo "$worktree_dir"
             return
