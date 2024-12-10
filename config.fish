@@ -183,7 +183,6 @@ if status is-interactive
 
     function wgwt
         set worktree_dir $(gwt)
-        echo "worktree_dir: $worktree_dir"
         if test -z $worktree_dir
             return
         end
