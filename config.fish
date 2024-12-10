@@ -185,37 +185,54 @@ if status is-interactive
 
     function wgwt
         set worktree_dir $(gwt)
-        echo "worktree_dir: $worktree_dir"
+        if test -z $worktree_dir
+            return
+        end
         sudo webstorm $worktree_dir
         sesh connect $worktree_dir
     end
 
     function ggwt
         set worktree_dir $(gwt)
+        if test -z $worktree_dir
+          return
+          end
         sudo goland $worktree_dir
         sesh connect $worktree_dir
     end
 
     function pgwt
         set worktree_dir $(gwt)
+        if test -z $worktree_dir
+          return
+          end
         sudo pycharm $worktree_dir
         sesh connect $worktree_dir
     end
 
     function rgwt
         set worktree_dir $(gwt)
+        if test -z $worktree_dir
+          return
+          end
         sudo rustrover $worktree_dir
         sesh connect $worktree_dir
     end
 
     function cgwt
         set worktree_dir $(gwt)
+        if test -z $worktree_dir
+          return
+          end
         sudo clion $worktree_dir
         sesh connect $worktree_dir
     end
 
     function dgwt
         set worktree_dir $(gwt)
+        if test -z $worktree_dir
+          return
+          end
         sudo datagrip $worktree_dir
         sesh connect $worktree_dir
     end
@@ -418,14 +435,16 @@ if status is-interactive
 
         if test -z "$branch"
             for b in $(git branch)
-                set -a branches $(echo $b)
+                if not test -z $(echo $b | string match -r '^\+|\*')
+                    set -a branches $(echo $b)
+                end
             end
 
             if not set -q branches
                 echo "No branches available"
                 return
             end
-            set branch $(printf "%s\n" $branches | fzf --header "branches" | string trim -c '+* ' | xargs)
+            set branch $(printf "%s\n" $branches | fzf --header "worktrees" | string trim -c '+* ' | xargs)
         end
 
         if test -z "$branch"
