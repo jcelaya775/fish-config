@@ -273,6 +273,15 @@ if status is-interactive
         end
         sudo webstorm $worktree_dir
         sesh connect $worktree_dir
+
+        set init_cmd $(~/.config/fish/worktree-create-cmds $worktree_dir)
+        if test -z "$init_cmd"
+            return
+        else
+            set session_name (echo $worktree_dir | sed 's/.*\///g')
+            sleep 0.5
+            tmux send-keys -t $session_name "$init_cmd" Enter
+        end
     end
 
     function ggwta
@@ -283,6 +292,15 @@ if status is-interactive
         end
         sudo goland $worktree_dir
         sesh connect $worktree_dir
+
+        set init_cmd $(~/.config/fish/worktree-create-cmds $worktree_dir)
+        if test -z "$init_cmd"
+            return
+        else
+            set session_name (echo $worktree_dir | sed 's/.*\///g')
+            sleep 0.5
+            tmux send-keys -t $session_name "$init_cmd" Enter
+        end
     end
 
     function pgwta
@@ -293,6 +311,15 @@ if status is-interactive
         end
         sudo pycharm $worktree_dir
         sesh connect $worktree_dir
+
+        set init_cmd $(~/.config/fish/worktree-create-cmds $worktree_dir)
+        if test -z "$init_cmd"
+            return
+        else
+            set session_name (echo $worktree_dir | sed 's/.*\///g')
+            sleep 0.5
+            tmux send-keys -t $session_name "$init_cmd" Enter
+        end
     end
 
     function rgwta
@@ -303,6 +330,15 @@ if status is-interactive
         end
         sudo rustrover $worktree_dir
         sesh connect $worktree_dir
+
+        set init_cmd $(~/.config/fish/worktree-create-cmds $worktree_dir)
+        if test -z "$init_cmd"
+            return
+        else
+            set session_name (echo $worktree_dir | sed 's/.*\///g')
+            sleep 0.5
+            tmux send-keys -t $session_name "$init_cmd" Enter
+        end
     end
 
     function cgwta
@@ -313,6 +349,15 @@ if status is-interactive
         end
         sudo clion $worktree_dir
         sesh connect $worktree_dir
+
+        set init_cmd $(~/.config/fish/worktree-create-cmds $worktree_dir)
+        if test -z "$init_cmd"
+            return
+        else
+            set session_name (echo $worktree_dir | sed 's/.*\///g')
+            sleep 0.5
+            tmux send-keys -t $session_name "$init_cmd" Enter
+        end
     end
 
     function dgwta
@@ -323,6 +368,15 @@ if status is-interactive
         end
         sudo datagrip $worktree_dir
         sesh connect $worktree_dir
+
+        set init_cmd $(~/.config/fish/worktree-create-cmds $worktree_dir)
+        if test -z "$init_cmd"
+            return
+        else
+            set session_name (echo $worktree_dir | sed 's/.*\///g')
+            sleep 0.5
+            tmux send-keys -t $session_name "$init_cmd" Enter
+        end
     end
 
     function gwtrm
