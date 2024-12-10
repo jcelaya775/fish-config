@@ -169,22 +169,21 @@ if status is-interactive
         set worktree_search_result $(git -C $repo_dir worktree list | tail -n +2 | awk '{print $1}' \
                                     | sed 's/\/Users\/jorge\/repos\/'"$repo_name"'\///' \
                                     | rg ^$branch\$)
-        if not test -z $worktree_search_result
-            set branch $(echo $argv[1] | xargs)
-        else
+        if test -z $worktree_search_result
             set original_dir $(pwd)
             cd $repo_dir
             gwta $branch &>/dev/null
             cd $original_dir
         end
-        set worktree_dir "$repo_dir/$branch"
         if not test -z $repo_dir && not test -z $branch
+            set worktree_dir "$repo_dir/$branch"
             echo "$worktree_dir"
         end
     end
 
     function wgwt
         set worktree_dir $(gwt)
+        echo "worktree_dir: $worktree_dir"
         if test -z $worktree_dir
             return
         end
@@ -195,8 +194,8 @@ if status is-interactive
     function ggwt
         set worktree_dir $(gwt)
         if test -z $worktree_dir
-          return
-          end
+            return
+        end
         sudo goland $worktree_dir
         sesh connect $worktree_dir
     end
@@ -204,8 +203,8 @@ if status is-interactive
     function pgwt
         set worktree_dir $(gwt)
         if test -z $worktree_dir
-          return
-          end
+            return
+        end
         sudo pycharm $worktree_dir
         sesh connect $worktree_dir
     end
@@ -213,8 +212,8 @@ if status is-interactive
     function rgwt
         set worktree_dir $(gwt)
         if test -z $worktree_dir
-          return
-          end
+            return
+        end
         sudo rustrover $worktree_dir
         sesh connect $worktree_dir
     end
@@ -222,8 +221,8 @@ if status is-interactive
     function cgwt
         set worktree_dir $(gwt)
         if test -z $worktree_dir
-          return
-          end
+            return
+        end
         sudo clion $worktree_dir
         sesh connect $worktree_dir
     end
@@ -231,8 +230,8 @@ if status is-interactive
     function dgwt
         set worktree_dir $(gwt)
         if test -z $worktree_dir
-          return
-          end
+            return
+        end
         sudo datagrip $worktree_dir
         sesh connect $worktree_dir
     end
