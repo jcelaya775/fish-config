@@ -174,6 +174,8 @@ if status is-interactive
             cd $repo_dir
             gwta $branch &>/dev/null
             cd $original_dir
+            set worktree_dir "$repo_dir/$branch"
+            set -g init_cmd "$(~/.config/fish/worktree-create-cmds $worktree_dir)"
         end
         if not test -z $repo_dir && not test -z $branch
             set worktree_dir "$repo_dir/$branch"
@@ -181,6 +183,7 @@ if status is-interactive
         end
     end
 
+    # TODO: Add auto startup commands support
     function wgwt
         set worktree_dir $(gwt)
         if test -z $worktree_dir
@@ -188,6 +191,12 @@ if status is-interactive
         end
         sudo webstorm $worktree_dir
         sesh connect $worktree_dir
+
+        if set -q init_cmd && not test -z $init_cmd
+            set session_name (echo $worktree_dir | sed 's/.*\///g')
+            sleep 0.5
+            tmux send-keys -t $session_name "$init_cmd" Enter
+        end
     end
 
     function ggwt
@@ -197,6 +206,12 @@ if status is-interactive
         end
         sudo goland $worktree_dir
         sesh connect $worktree_dir
+
+        if set -q init_cmd && not test -z $init_cmd
+            set session_name (echo $worktree_dir | sed 's/.*\///g')
+            sleep 0.5
+            tmux send-keys -t $session_name "$init_cmd" Enter
+        end
     end
 
     function pgwt
@@ -206,6 +221,12 @@ if status is-interactive
         end
         sudo pycharm $worktree_dir
         sesh connect $worktree_dir
+
+        if set -q init_cmd && not test -z $init_cmd
+            set session_name (echo $worktree_dir | sed 's/.*\///g')
+            sleep 0.5
+            tmux send-keys -t $session_name "$init_cmd" Enter
+        end
     end
 
     function rgwt
@@ -215,6 +236,12 @@ if status is-interactive
         end
         sudo rustrover $worktree_dir
         sesh connect $worktree_dir
+
+        if set -q init_cmd && not test -z $init_cmd
+            set session_name (echo $worktree_dir | sed 's/.*\///g')
+            sleep 0.5
+            tmux send-keys -t $session_name "$init_cmd" Enter
+        end
     end
 
     function cgwt
@@ -224,6 +251,12 @@ if status is-interactive
         end
         sudo clion $worktree_dir
         sesh connect $worktree_dir
+
+        if set -q init_cmd && not test -z $init_cmd
+            set session_name (echo $worktree_dir | sed 's/.*\///g')
+            sleep 0.5
+            tmux send-keys -t $session_name "$init_cmd" Enter
+        end
     end
 
     function dgwt
@@ -233,6 +266,12 @@ if status is-interactive
         end
         sudo datagrip $worktree_dir
         sesh connect $worktree_dir
+
+        if set -q init_cmd && not test -z $init_cmd
+            set session_name (echo $worktree_dir | sed 's/.*\///g')
+            sleep 0.5
+            tmux send-keys -t $session_name "$init_cmd" Enter
+        end
     end
 
     function gwta
