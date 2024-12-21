@@ -37,5 +37,5 @@ SETUVAR fish_pager_color_description:B3A06D\x1eyellow\x1e\x2di
 SETUVAR fish_pager_color_prefix:normal\x1e\x2d\x2dbold\x1e\x2d\x2dunderline
 SETUVAR fish_pager_color_progress:brwhite\x1e\x2d\x2dbackground\x3dcyan
 SETUVAR fish_pager_color_selected_background:\x2dr
-SETUVAR fish_user_paths:/Users/jorge/Applications\x1e/usr/local/bin\x1e/Users/jorge/\x2elocal/bin\x1e/Users/jorge/go/bin\x1e/Applications/Docker\x2eapp/Contents/Resources/bin\x1e/usr/bin\x1e/opt/homebrew/bin\x1e/opt/homebrew/sbin\x1e/Users/jorge/\x2elocal/share/nvm/v22\x2e1\x2e0/bin\x1e/Users/jorge/\x2etmux/plugins/t\x2dsmart\x2dtmux\x2dsession\x2dmanager/bin\x1e/opt/homebrew/sbin\x20/Users/jorge/\x2elocal/share/nvm/v22\x2e1\x2e0/bin\x20/usr/local/bin\x20/Users/jorge/\x2etmux/plugins/t\x2dsmart\x2dtmux\x2dsession\x2dmanager/bin\x20/opt/homebrew/Cellar/nvm/0\x2e39\x2e7\x20/opt/homebrew/Cellar/fzf/0\x2e52\x2e0/bin\x20/opt/homebrew/bin
+SETUVAR fish_user_paths:/Users/jorge/Library/Android/platform\x2dtools\x1e/Users/jorge/Library/Android/emulator\x1e/Users/jorge/Library/Android/cmdline\x2dtools/latest/bin\x1e/Users/jorge/go/bin\x1e/Users/jorge/\x2etmux/plugins/t\x2dsmart\x2dtmux\x2dsession\x2dmanager/bin\x1e/Users/jorge/Applications\x1e/Users/jorge/\x2elocal/share/nvm/v22\x2e12\x2e0/bin\x1e/usr/local/bin\x1e/Users/jorge/\x2elocal/bin
 SETUVAR nvm_default_version:v22\x2e12\x2e0
