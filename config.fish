@@ -184,7 +184,6 @@ if status is-interactive
         end
     end
 
-    # TODO: Add auto startup commands support
     function wgwt
         set worktree_dir $(gwt)
         if test -z $worktree_dir
@@ -634,3 +633,6 @@ if not string match -q -- $PNPM_HOME $PATH
     set -gx PATH "$PNPM_HOME" $PATH
 end
 # pnpm end
+
+# Added by `rbenv init` on Mon Dec 23 16:27:17 CST 2024
+status --is-interactive; and rbenv init - --no-rehash fish | source
