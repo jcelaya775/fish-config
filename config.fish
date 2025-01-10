@@ -460,6 +460,7 @@ if status is-interactive
         end
     end
 
+    # TODO: Prompt user to confirm branch deletion after removing work-tree w/ huh cli
     function gwtrm
         set branch $argv[1]
 
