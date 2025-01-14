@@ -22,6 +22,7 @@ if status is-interactive
     abbr -a rr 'sudo rustrover'
     abbr -a cl 'sudo clion'
     abbr -a dg 'sudo datagrip'
+    abbr -a lg lazygit
 
     # Yazi
     function y
