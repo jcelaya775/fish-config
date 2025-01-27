@@ -1,6 +1,13 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
+SETUVAR --export ANDROID_HOME:/Users/jorge/Library/Android/
+SETUVAR --export COLORTERM:truecolor
+SETUVAR --export EDITOR:nvim
 SETUVAR --export FZF_DEFAULT_OPTS:\x2d\x2dcycle\x20\x2d\x2dlayout\x3dreverse\x20\x2d\x2dborder\x20\x2d\x2dheight\x3d90\x25\x20\x2d\x2dpreview\x2dwindow\x3dwrap\x20\x2d\x2dmarker\x3d\x22\x2a\x22
+SETUVAR --export --path PATH:/Users/jorge/Library/pnpm\x1e/opt/homebrew/bin\x1e/opt/homebrew/sbin\x1e/Users/jorge/\x2ebun/bin\x1e/Users/jorge/Library/Android/platform\x2dtools\x1e/Users/jorge/Library/Android/emulator\x1e/Users/jorge/Library/Android/cmdline\x2dtools/latest/bin\x1e/Users/jorge/go/bin\x1e/Users/jorge/\x2etmux/plugins/t\x2dsmart\x2dtmux\x2dsession\x2dmanager/bin\x1e/Users/jorge/Applications\x1e/Users/jorge/\x2elocal/share/nvm/v22\x2e12\x2e0/bin\x1e/usr/local/bin\x1e/Users/jorge/\x2elocal/bin\x1e/Users/jorge/\x2elocal/share/nvim/mason/bin\x1e/Users/jorge/\x2elocal/share/nvim/mason/bin\x1e/System/Cryptexes/App/usr/bin\x1e/usr/bin\x1e/bin\x1e/usr/sbin\x1e/sbin\x1e/var/run/com\x2eapple\x2esecurity\x2ecryptexd/codex\x2esystem/bootstrap/usr/local/bin\x1e/var/run/com\x2eapple\x2esecurity\x2ecryptexd/codex\x2esystem/bootstrap/usr/bin\x1e/var/run/com\x2eapple\x2esecurity\x2ecryptexd/codex\x2esystem/bootstrap/usr/appleinternal/bin\x1e/Library/Apple/usr/bin\x1e/usr/local/go/bin\x1e/Library/TeX/texbin\x1e/Users/jorge/\x2esdkman/candidates/java/current/bin\x1e/Users/jorge/\x2ecargo/bin\x1e/Applications/Ghostty\x2eapp/Contents/MacOS
+SETUVAR --export PNPM_HOME:/Users/jorge/Library/pnpm
+SETUVAR --export T_REPOS_DIR:/Users/jorge/repos/
+SETUVAR --export YAZI_CONFIG_HOME:/Users/jorge/\x2econfig/yazi/
 SETUVAR __fish_initialized:3400
 SETUVAR _fisher_brgmnn_2F_fish_2D_docker_2D_compose_files:\x7e/\x2econfig/fish/completions/docker\x2dcompose\x2efish
 SETUVAR _fisher_dteoh_2F_fish_2D_homebrew_2D_apple_2D_silicon_files:\x7e/\x2econfig/fish/conf\x2ed/homebrew\x2dapple\x2dsilicon\x2efish
@@ -38,5 +45,24 @@ SETUVAR fish_pager_color_description:B3A06D\x1eyellow\x1e\x2di
 SETUVAR fish_pager_color_prefix:normal\x1e\x2d\x2dbold\x1e\x2d\x2dunderline
 SETUVAR fish_pager_color_progress:brwhite\x1e\x2d\x2dbackground\x3dcyan
 SETUVAR fish_pager_color_selected_background:\x2dr
-SETUVAR fish_user_paths:/Users/jorge/Library/Android/platform\x2dtools\x1e/Users/jorge/Library/Android/emulator\x1e/Users/jorge/Library/Android/cmdline\x2dtools/latest/bin\x1e/Users/jorge/go/bin\x1e/Users/jorge/\x2etmux/plugins/t\x2dsmart\x2dtmux\x2dsession\x2dmanager/bin\x1e/Users/jorge/Applications\x1e/Users/jorge/\x2elocal/share/nvm/v22\x2e12\x2e0/bin\x1e/usr/local/bin\x1e/Users/jorge/\x2elocal/bin
+SETUVAR fish_user_paths:/Users/jorge/Library/pnpm\x1e/Users/jorge/\x2ebun/bin\x1e/Users/jorge/Library/Android/platform\x2dtools\x1e/Users/jorge/Library/Android/emulator\x1e/Users/jorge/Library/Android/cmdline\x2dtools/latest/bin\x1e/Users/jorge/go/bin\x1e/Users/jorge/\x2etmux/plugins/t\x2dsmart\x2dtmux\x2dsession\x2dmanager/bin\x1e/Users/jorge/Applications\x1e/Users/jorge/\x2elocal/share/nvm/v22\x2e12\x2e0/bin\x1e/usr/local/bin\x1e/Users/jorge/\x2elocal/bin
 SETUVAR nvm_default_version:v22\x2e12\x2e0
+SETUVAR --export theme_display_cmd_duration:yes
+SETUVAR --export theme_display_date:yes
+SETUVAR --export theme_display_git:yes
+SETUVAR --export theme_display_git_ahead_verbose:yes
+SETUVAR --export theme_display_git_dirty:yes
+SETUVAR --export theme_display_git_dirty_verbose:yes
+SETUVAR --export theme_display_git_master_branch:yes
+SETUVAR --export theme_display_git_untracked:yes
+SETUVAR --export theme_display_hostname:yes
+SETUVAR --export theme_display_k8s_context:no
+SETUVAR --export theme_display_ruby:yes
+SETUVAR --export theme_display_user:yes
+SETUVAR --export theme_display_vagrant:no
+SETUVAR --export theme_display_vi:yes
+SETUVAR --export theme_display_virtualenv:yes
+SETUVAR --export theme_git_worktree_support:yes
+SETUVAR --export theme_nerd_fonts:yes
+SETUVAR --export theme_powerline_fonts:yes
+SETUVAR --export theme_show_exit_status:yes
