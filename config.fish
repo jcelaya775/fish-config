@@ -613,6 +613,8 @@ bind -M visual -m default y 'fish_clipboard_copy; commandline -f end-selection r
 # set -Ux FZF_DEFAULT_OPTS '--cycle --layout=reverse --border --height=90% --preview-window=wrap --marker="*"'
 # set -Ux T_REPOS_DIR $HOME/repos/
 # set -Ux YAZI_CONFIG_HOME $HOME/.config/yazi/
+# set -U fish_cursor_insert line
+# set -U fish_cursor_replace_one underscore
 
 # # >>> conda initialize >>>
 # # !! Contents within this block are managed by 'conda init' !!
