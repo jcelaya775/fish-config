@@ -131,7 +131,7 @@ if status is-interactive
         switch $(pwd)
             case "$HOME/repos/*"
                 if test -d $repo_dir/worktrees
-                    set repo_dir "$HOME/repos/$(pwd | sed 's/\/Users\/jorge\/repos\///' | sed 's/\/.*//')"
+                    set repo_dir "$HOME/repos/$(pwd | sed 's/\/home\/jorge\/repos\///' | sed 's/\/.*//')"
                 end
         end
         if not set -q repo_dir
@@ -142,7 +142,7 @@ if status is-interactive
                 end
             end
             set repo_name $(printf "%s\n" $worktree_repos | fzf --header "repos" | string trim -c '/' \
-                          | sed 's/\/Users\/jorge\/repos\///' | sed 's/\/.*//')
+                          | sed 's/\/home\/jorge\/repos\///' | sed 's/\/.*//')
             set repo_dir "$HOME/repos/$repo_name"
         end
 
@@ -150,7 +150,7 @@ if status is-interactive
             return
         end
         if test -z $repo_name
-            set repo_name $(pwd | sed 's/\/Users\/jorge\/repos\///' | sed 's/\/.*//')
+            set repo_name $(pwd | sed 's/\/home\/jorge\/repos\///' | sed 's/\/.*//')
         end
 
         if set -q argv[1]
@@ -169,7 +169,7 @@ if status is-interactive
         end
 
         set worktree_search_result $(git -C $repo_dir worktree list | tail -n +2 | awk '{print $1}' \
-                                    | sed 's/\/Users\/jorge\/repos\/'"$repo_name"'\///' \
+                                    | sed 's/\/home\/jorge\/repos\/'"$repo_name"'\///' \
                                     | rg ^$branch\$)
         if test -z $worktree_search_result
             set original_dir $(pwd)
@@ -283,7 +283,7 @@ if status is-interactive
             return
         end
 
-        set repo_name $(pwd | sed 's/\/Users\/jorge\/repos\///' | sed 's/\/.*//')
+        set repo_name $(pwd | sed 's/\/home\/jorge\/repos\///' | sed 's/\/.*//')
 
         if test -z "$branch"
             # NOTE: fzf doesn't show remote branches
@@ -309,7 +309,7 @@ if status is-interactive
         set branch_search_result $(git branch | string trim -c '+* ' | rg ^$branch\$)
         if not test -z "$branch_search_result"
             set worktree_search_result $(git worktree list | tail -n +2 | awk '{print $1}' \
-                                        | sed 's/\/Users\/jorge\/repos\/'"$repo_name"'\///' \
+                                        | sed 's/\/home\/jorge\/repos\/'"$repo_name"'\///' \
                                         | rg ^$branch\$)
             if not test -z "$worktree_search_result"
                 echo "Work-tree already exists"
@@ -470,7 +470,7 @@ if status is-interactive
             return
         end
 
-        set repo_name $(pwd | sed 's/\/Users\/jorge\/repos\///' | sed 's/\/.*//')
+        set repo_name $(pwd | sed 's/\/home\/jorge\/repos\///' | sed 's/\/.*//')
 
         if test -z "$branch"
             for b in $(git branch)
@@ -505,7 +505,7 @@ if status is-interactive
     function zd
         set HOME_REPLACER "s|^$HOME/|~/|"
         set result (zoxide query -l | sed -e "$HOME_REPLACER" | fzf)
-        set result (echo $result | sed 's/~/\/Users\/jorge/')
+        set result (echo $result | sed 's/~/\/home\/jorge/')
         cd $result
     end
 
@@ -556,19 +556,19 @@ if status is-interactive
 end
 
 
-# Path
-fish_add_path $HOME/.local/bin/
-fish_add_path /usr/local/bin
-fish_add_path $HOME/.local/share/nvm/v22.12.0/bin/node
-fish_add_path $HOME/.local/share/nvm/v22.12.0/bin/
-fish_add_path $HOME/Applications/
-fish_add_path $HOME/.tmux/plugins/t-smart-tmux-session-manager/bin/
-fish_add_path /opt/idea-IC-232.10227.8/bin/
-fish_add_path $HOME/bin/gcc-arm-none-eabi-10.3-2021.10/
-fish_add_path $HOME/go/bin/
-fish_add_path $ANDROID_HOME/cmdline-tools/latest/bin/
-fish_add_path $ANDROID_HOME/emulator/
-fish_add_path $ANDROID_HOME/platform-tools/
+# # Path
+# fish_add_path $HOME/.local/bin/
+# fish_add_path /usr/local/bin
+# fish_add_path $HOME/.local/share/nvm/v22.12.0/bin/node
+# fish_add_path $HOME/.local/share/nvm/v22.12.0/bin/
+# fish_add_path $HOME/Applications/
+# fish_add_path $HOME/.tmux/plugins/t-smart-tmux-session-manager/bin/
+# fish_add_path /opt/idea-IC-232.10227.8/bin/
+# fish_add_path $HOME/bin/gcc-arm-none-eabi-10.3-2021.10/
+# fish_add_path $HOME/go/bin/
+# fish_add_path $ANDROID_HOME/cmdline-tools/latest/bin/
+# fish_add_path $ANDROID_HOME/emulator/
+# fish_add_path $ANDROID_HOME/platform-tools/
 
 # Key bindings
 bind -M insert \ek kill-line
@@ -584,33 +584,33 @@ bind -M insert \cd ''
 bind -M visual -m default y 'fish_clipboard_copy; commandline -f end-selection repaint-mode'
 
 
-# Config
-set -gx ANDROID_HOME /Users/jorge/Library/Android/
-set -gx COLORTERM truecolor
-set -gx EDITOR nvim
-set -g theme_display_ruby yes
-set -g theme_display_virtualenv yes
-set -g theme_display_vagrant no
-set -g theme_display_vi yes
-set -g theme_display_k8s_context no # yes
-set -g theme_display_user yes
-set -g theme_display_hostname yes
-set -g theme_show_exit_status yes
-set -g theme_git_worktree_support yes
-set -g theme_display_git yes
-set -g theme_display_git_dirty yes
-set -g theme_display_git_untracked yes
-set -g theme_display_git_ahead_verbose yes
-set -g theme_display_git_dirty_verbose yes
-set -g theme_display_git_master_branch yes
-set -g theme_display_date yes
-set -g theme_display_cmd_duration yes
-set -g theme_powerline_fonts yes
-set -g theme_nerd_fonts yes
-set -g FZF_DEFAULT_OPTS '--cycle --layout=reverse --border --height=90% --preview-window=wrap --marker="*"'
+# # Config
+# set -Ux ANDROID_HOME $HOME/Library/Android/
+# set -Ux COLORTERM truecolor
+# set -Ux EDITOR nvim
+# set -Ux theme_display_ruby yes
+# set -Ux theme_display_virtualenv yes
+# set -Ux theme_display_vagrant no
+# set -Ux theme_display_vi yes
+# set -Ux theme_display_k8s_context no # yes
+# set -Ux theme_display_user yes
+# set -Ux theme_display_hostname yes
+# set -Ux theme_show_exit_status yes
+# set -Ux theme_git_worktree_support yes
+# set -Ux theme_display_git yes
+# set -Ux theme_display_git_dirty yes
+# set -Ux theme_display_git_untracked yes
+# set -Ux theme_display_git_ahead_verbose yes
+# set -Ux theme_display_git_dirty_verbose yes
+# set -Ux theme_display_git_master_branch yes
+# set -Ux theme_display_date yes
+# set -Ux theme_display_cmd_duration yes
+# set -Ux theme_powerline_fonts yes
+# set -Ux theme_nerd_fonts yes
+# set -Ux FZF_DEFAULT_OPTS '--cycle --layout=reverse --border --height=90% --preview-window=wrap --marker="*"'
 
-set -x T_REPOS_DIR $HOME/repos/
-set -x YAZI_CONFIG_HOME $HOME/.config/yazi/
+# set -Ux T_REPOS_DIR $HOME/repos/
+# set -Ux YAZI_CONFIG_HOME $HOME/.config/yazi/
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
@@ -630,11 +630,8 @@ set --export BUN_INSTALL "$HOME/.bun"
 set --export PATH $BUN_INSTALL/bin $PATH
 
 # pnpm
-set -gx PNPM_HOME /Users/jorge/Library/pnpm
+set -gx PNPM_HOME /home/jorge/Library/pnpm
 if not string match -q -- $PNPM_HOME $PATH
     set -gx PATH "$PNPM_HOME" $PATH
 end
 # pnpm end
-
-# Added by `rbenv init` on Mon Dec 23 16:27:17 CST 2024
-status --is-interactive; and rbenv init - --no-rehash fish | source
