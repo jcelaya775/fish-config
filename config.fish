@@ -97,6 +97,7 @@ if status is-interactive
 
     abbr -a tconf 'nvim ~/.tmux.conf'
     abbr -a tn 'tmux new-session -s (pwd | sed \'s/.*\///g\')' # TODO: Fix sed \'s/.*\///g\' from being entered
+    abbr -a t tmux
     abbr -a ta 'tmux attach'
     abbr -a tls 'tmux ls'
     abbr -a tks 'tmux kill-server'
