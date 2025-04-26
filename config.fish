@@ -16,12 +16,12 @@ if status is-interactive
     abbr -a y y
     abbr -a pn pnpm
     abbr -a p python
-    abbr -a ws 'sudo webstorm'
-    abbr -a pc 'sudo pycharm'
-    abbr -a gl 'sudo goland'
-    abbr -a rr 'sudo rustrover'
-    abbr -a cl 'sudo clion'
-    abbr -a dg 'sudo datagrip'
+    abbr -a ws 'webstorm . >/dev/null 2>&1 &'
+    abbr -a pc 'pycharm . >/dev/null 2>&1 &'
+    abbr -a gl 'goland . >/dev/null 2>&1 &'
+    abbr -a rr 'rustrover . >/dev/null 2>&1 &'
+    abbr -a cl 'clion . >/dev/null 2>&1 &'
+    abbr -a dg 'datagrip . >/dev/null 2>&1 &'
     abbr -a lg lazygit
 
     # Yazi
@@ -567,9 +567,9 @@ end
 # fish_add_path /opt/idea-IC-232.10227.8/bin/
 # fish_add_path $HOME/bin/gcc-arm-none-eabi-10.3-2021.10/
 # fish_add_path $HOME/go/bin/
-# fish_add_path $ANDROID_HOME/cmdline-tools/latest/bin/
-# fish_add_path $ANDROID_HOME/emulator/
-# fish_add_path $ANDROID_HOME/platform-tools/
+fish_add_path $ANDROID_HOME/cmdline-tools/latest/bin
+fish_add_path $ANDROID_HOME/emulator/
+fish_add_path $ANDROID_HOME/platform-tools/
 
 # Key bindings
 bind -M insert \ek kill-line
@@ -586,7 +586,7 @@ bind -M visual -m default y 'fish_clipboard_copy; commandline -f end-selection r
 
 
 # # Config
-# set -Ux ANDROID_HOME $HOME/Library/Android/
+set -Ux ANDROID_HOME $HOME/Android/Sdk
 # set -Ux COLORTERM truecolor
 # set -Ux EDITOR nvim
 # set -Ux theme_display_ruby yes
@@ -613,26 +613,26 @@ bind -M visual -m default y 'fish_clipboard_copy; commandline -f end-selection r
 # set -Ux T_REPOS_DIR $HOME/repos/
 # set -Ux YAZI_CONFIG_HOME $HOME/.config/yazi/
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-if test -f /home/jorge/anaconda3/bin/conda
-    eval /home/jorge/anaconda3/bin/conda "shell.fish" "hook" $argv | source
-else
-    if test -f "/home/jorge/anaconda3/etc/fish/conf.d/conda.fish"
-        . "/home/jorge/anaconda3/etc/fish/conf.d/conda.fish"
-    else
-        set -x PATH "/home/jorge/anaconda3/bin" $PATH
-    end
-end
-# <<< conda initialize <<<
+# # >>> conda initialize >>>
+# # !! Contents within this block are managed by 'conda init' !!
+# if test -f /home/jorge/anaconda3/bin/conda
+#     eval /home/jorge/anaconda3/bin/conda "shell.fish" "hook" $argv | source
+# else
+#     if test -f "/home/jorge/anaconda3/etc/fish/conf.d/conda.fish"
+#         . "/home/jorge/anaconda3/etc/fish/conf.d/conda.fish"
+#     else
+#         set -x PATH "/home/jorge/anaconda3/bin" $PATH
+#     end
+# end
+# # <<< conda initialize <<<
 
-# bun
-set --export BUN_INSTALL "$HOME/.bun"
-set --export PATH $BUN_INSTALL/bin $PATH
+# # bun
+# set --export BUN_INSTALL "$HOME/.bun"
+# set --export PATH $BUN_INSTALL/bin $PATH
 
-# pnpm
-set -gx PNPM_HOME /home/jorge/Library/pnpm
-if not string match -q -- $PNPM_HOME $PATH
-    set -gx PATH "$PNPM_HOME" $PATH
-end
-# pnpm end
+# # pnpm
+# set -gx PNPM_HOME /home/jorge/Library/pnpm
+# if not string match -q -- $PNPM_HOME $PATH
+#     set -gx PATH "$PNPM_HOME" $PATH
+# end
+# # pnpm end

@@ -1,6 +1,6 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
-SETUVAR --export ANDROID_HOME:/home/jorge/Library/Android/
+SETUVAR --export ANDROID_HOME:/home/jorge/Android/Sdk
 SETUVAR --export COLORTERM:truecolor
 SETUVAR --export EDITOR:nvim
 SETUVAR --export T_REPOS_DIR:/home/jorge/repos/
@@ -8,6 +8,8 @@ SETUVAR --export YAZI_CONFIG_HOME:/home/jorge/\x2econfig/yazi/
 SETUVAR __done_min_cmd_duration:10000
 SETUVAR __done_notification_urgency_level:low
 SETUVAR __fish_initialized:3800
+SETUVAR _fisher_plugins:reitzig/sdkman\x2dfor\x2dfish\x40v2\x2e1\x2e0
+SETUVAR _fisher_reitzig_2F_sdkman_2D_for_2D_fish_40_v2_2E_31_2E_30__files:\x7e/\x2econfig/fish/functions/sdk\x2efish\x1e\x7e/\x2econfig/fish/conf\x2ed/sdk\x2efish\x1e\x7e/\x2econfig/fish/completions/sdk\x2efish
 SETUVAR _fisher_upgraded_to_4_4:\x1d
 SETUVAR fish_color_autosuggestion:brblack
 SETUVAR fish_color_cancel:\x2dr
@@ -37,7 +39,7 @@ SETUVAR fish_pager_color_description:yellow\x1e\x2di
 SETUVAR fish_pager_color_prefix:normal\x1e\x2d\x2dbold\x1e\x2d\x2dunderline
 SETUVAR fish_pager_color_progress:brwhite\x1e\x2d\x2dbackground\x3dcyan
 SETUVAR fish_pager_color_selected_background:\x2dr
-SETUVAR fish_user_paths:/home/jorge/\x2etmux/plugins/t\x2dsmart\x2dtmux\x2dsession\x2dmanager/bin\x1e/home/jorge/\x2elocal/share/nvm/v22\x2e12\x2e0/bin\x1e/usr/local/bin\x1e/home/jorge/\x2elocal/bin\x1e/home/jorge/go/bin\x1e/usr/local/go/bin
+SETUVAR fish_user_paths:/home/jorge/Android/Sdk/build\x2dtools/36\x2e0\x2e0\x1e/home/jorge/Android/Sdk/emulator\x1e/home/jorge/Android/Sdk/platform\x2dtools\x1e/home/jorge/Android/Sdk/cmdline\x2dtools/latest/bin\x1e/home/jorge/\x2etmux/plugins/t\x2dsmart\x2dtmux\x2dsession\x2dmanager/bin\x1e/home/jorge/\x2elocal/share/nvm/v22\x2e12\x2e0/bin\x1e/usr/local/bin\x1e/home/jorge/\x2elocal/bin\x1e/home/jorge/go/bin\x1e/usr/local/go/bin
 SETUVAR pure_begin_prompt_with_current_directory:true
 SETUVAR pure_check_for_new_release:false
 SETUVAR pure_color_at_sign:pure_color_mute
