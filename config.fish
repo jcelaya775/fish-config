@@ -567,9 +567,10 @@ end
 # fish_add_path /opt/idea-IC-232.10227.8/bin/
 # fish_add_path $HOME/bin/gcc-arm-none-eabi-10.3-2021.10/
 # fish_add_path $HOME/go/bin/
-fish_add_path $ANDROID_HOME/cmdline-tools/latest/bin
-fish_add_path $ANDROID_HOME/emulator/
-fish_add_path $ANDROID_HOME/platform-tools/
+# fish_add_path $ANDROID_HOME/cmdline-tools/latest/bin
+# fish_add_path $ANDROID_HOME/emulator/
+# fish_add_path $ANDROID_HOME/platform-tools/
+# fish_add_path /home/jorge/anaconda3/bin
 
 # Key bindings
 bind -M insert \ek kill-line
@@ -586,7 +587,7 @@ bind -M visual -m default y 'fish_clipboard_copy; commandline -f end-selection r
 
 
 # # Config
-set -Ux ANDROID_HOME $HOME/Android/Sdk
+# set -Ux ANDROID_HOME $HOME/Android/Sdk
 # set -Ux COLORTERM truecolor
 # set -Ux EDITOR nvim
 # set -Ux theme_display_ruby yes
