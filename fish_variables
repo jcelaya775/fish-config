@@ -1,6 +1,7 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
 SETUVAR --export ANDROID_HOME:/home/jorge/Android/Sdk
+SETUVAR --export BROWSER:google\x2dchrome\x2dstable
 SETUVAR --export COLORTERM:truecolor
 SETUVAR --export EDITOR:nvim
 SETUVAR --export T_REPOS_DIR:/home/jorge/repos/

@@ -23,6 +23,8 @@ if status is-interactive
     abbr -a cl 'clion . >/dev/null 2>&1 &'
     abbr -a dg 'datagrip . >/dev/null 2>&1 &'
     abbr -a lg lazygit
+    abbr -a ghcs 'gh copilot suggest'
+    abbr -a ghce 'gh copilot explain'
 
     # Yazi
     function y
@@ -570,7 +572,7 @@ end
 # fish_add_path $ANDROID_HOME/cmdline-tools/latest/bin
 # fish_add_path $ANDROID_HOME/emulator/
 # fish_add_path $ANDROID_HOME/platform-tools/
-# fish_add_path /home/jorge/anaconda3/bin
+# fish_add_path $HOME/anaconda3/bin
 
 # Key bindings
 bind -M insert \ek kill-line
