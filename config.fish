@@ -573,6 +573,7 @@ end
 # fish_add_path $ANDROID_HOME/emulator/
 # fish_add_path $ANDROID_HOME/platform-tools/
 # fish_add_path $HOME/anaconda3/bin
+# fish_add_path $HOME/.tmux/plugins/tmux-harpoon
 
 # Key bindings
 bind -M insert \ek kill-line
