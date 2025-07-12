@@ -23,6 +23,8 @@ if status is-interactive
     abbr -a cl 'sudo clion'
     abbr -a dg 'sudo datagrip'
     abbr -a lg lazygit
+    abbr -a ghcs 'gh copilot suggest'
+    abbr -a ghce 'gh copilot explain'
 
     # Yazi
     function y
@@ -97,6 +99,7 @@ if status is-interactive
 
     abbr -a tconf 'nvim ~/.tmux.conf'
     abbr -a tn 'tmux new-session -s (pwd | sed \'s/.*\///g\')' # TODO: Fix sed \'s/.*\///g\' from being entered
+    abbr -a t tmux
     abbr -a ta 'tmux attach'
     abbr -a tls 'tmux ls'
     abbr -a tks 'tmux kill-server'
