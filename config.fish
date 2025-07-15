@@ -574,6 +574,7 @@ end
 # fish_add_path $ANDROID_HOME/platform-tools/
 # fish_add_path $BUN_INSTALL/bin
 # fish_add_path /opt/anaconda3/bin/conda
+# fish_add_path /opt/anaconda3/bin/
 # fish_add_path $PNPM_HOME
 
 # Key bindings
