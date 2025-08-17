@@ -556,6 +556,21 @@ if status is-interactive
     abbr -a zq 'zoxide query'
     abbr -a zqi 'zoxide query -i'
     abbr -a zr 'zoxide remove'
+
+    function diff
+      set file1 $(mktemp /tmp/diff1.XXXXXX)
+      set file2 $(mktemp /tmp/diff2.XXXXXX)
+
+      gum write --header "Enter first text" > "$file1"
+      gum write --header "Enter second text" > "$file2"
+
+      if cmp -s "$file1" "$file2"
+        echo "The texts are identical."
+      else
+        delta "$file1" "$file2"
+      end
+      rm "$file1" "$file2"
+    end
 end
 
 
