@@ -129,208 +129,208 @@ if status is-interactive
 
 
     # Git worktrees
-    function gwt
-        # TODO: Add support for remote branches
-        switch $(pwd)
-            case "$HOME/repos/*"
-                if test -d $repo_dir/worktrees
-                    set repo_dir "$HOME/repos/$(pwd | sed 's/\/home\/jorge\/repos\///' | sed 's/\/.*//')"
-                end
-        end
-        if not set -q repo_dir
-            set repo_candidates $(fd --type directory --max-depth 1 --base-directory $HOME/repos | string trim -c '/')
-            for repo in $repo_candidates
-                if test -d $HOME/repos/$repo/worktrees
-                    set -a worktree_repos $repo
-                end
-            end
-            set repo_name $(printf "%s\n" $worktree_repos | fzf --header "repos" | string trim -c '/' \
-                          | sed 's/\/home\/jorge\/repos\///' | sed 's/\/.*//')
-            set repo_dir "$HOME/repos/$repo_name"
-        end
-
-        if not set -q repo_dir || test $repo_dir = "$HOME/repos/" || test -z $repo_dir
-            return
-        end
-        if test -z $repo_name
-            set repo_name $(pwd | sed 's/\/home\/jorge\/repos\///' | sed 's/\/.*//')
-        end
-
-        if set -q argv[1]
-            set branch $(echo $argv[1] | xargs)
-            set branch_search_result $(git -C $repo_dir branch | string trim -c '+* ' | rg ^$branch\$)
-            if test -z "$branch_search_result"
-                return
-            end
-        else
-            set branch $(git -C $repo_dir branch | fzf --header "branches" | tr -d '[:space:]' \
-                        | tr -d " \t\n\r" | string trim -c '+*' | xargs)
-        end
-
-        if test -z "$branch"
-            return
-        end
-
-        set worktree_search_result $(git -C $repo_dir worktree list | tail -n +2 | awk '{print $1}' \
-                                    | sed 's/\/home\/jorge\/repos\/'"$repo_name"'\///' \
-                                    | rg ^$branch\$)
-        if test -z $worktree_search_result
-            set original_dir $(pwd)
-            cd $repo_dir
-            gwta $branch &>/dev/null
-            cd $original_dir
-            set worktree_dir "$repo_dir/$branch"
-            set -g init_cmd "$(~/.config/fish/worktree-create-cmds $worktree_dir)"
-        end
-        if not test -z $repo_dir && not test -z $branch
-            set worktree_dir "$repo_dir/$branch"
-            echo "$worktree_dir"
-        end
-    end
-
-    function wgwt
-        set worktree_dir $(gwt)
-        if test -z $worktree_dir
-            return
-        end
-        sudo webstorm $worktree_dir
-        sesh connect $worktree_dir
-
-        if set -q init_cmd && not test -z $init_cmd
-            set session_name (echo $worktree_dir | sed 's/.*\///g')
-            sleep 0.5
-            tmux send-keys -t $session_name "$init_cmd" Enter
-        end
-    end
-
-    function ggwt
-        set worktree_dir $(gwt)
-        if test -z $worktree_dir
-            return
-        end
-        sudo goland $worktree_dir
-        sesh connect $worktree_dir
-
-        if set -q init_cmd && not test -z $init_cmd
-            set session_name (echo $worktree_dir | sed 's/.*\///g')
-            sleep 0.5
-            tmux send-keys -t $session_name "$init_cmd" Enter
-        end
-    end
-
-    function pgwt
-        set worktree_dir $(gwt)
-        if test -z $worktree_dir
-            return
-        end
-        sudo pycharm $worktree_dir
-        sesh connect $worktree_dir
-
-        if set -q init_cmd && not test -z $init_cmd
-            set session_name (echo $worktree_dir | sed 's/.*\///g')
-            sleep 0.5
-            tmux send-keys -t $session_name "$init_cmd" Enter
-        end
-    end
-
-    function rgwt
-        set worktree_dir $(gwt)
-        if test -z $worktree_dir
-            return
-        end
-        sudo rustrover $worktree_dir
-        sesh connect $worktree_dir
-
-        if set -q init_cmd && not test -z $init_cmd
-            set session_name (echo $worktree_dir | sed 's/.*\///g')
-            sleep 0.5
-            tmux send-keys -t $session_name "$init_cmd" Enter
-        end
-    end
-
-    function cgwt
-        set worktree_dir $(gwt)
-        if test -z $worktree_dir
-            return
-        end
-        sudo clion $worktree_dir
-        sesh connect $worktree_dir
-
-        if set -q init_cmd && not test -z $init_cmd
-            set session_name (echo $worktree_dir | sed 's/.*\///g')
-            sleep 0.5
-            tmux send-keys -t $session_name "$init_cmd" Enter
-        end
-    end
-
-    function dgwt
-        set worktree_dir $(gwt)
-        if test -z $worktree_dir
-            return
-        end
-        sudo datagrip $worktree_dir
-        sesh connect $worktree_dir
-
-        if set -q init_cmd && not test -z $init_cmd
-            set session_name (echo $worktree_dir | sed 's/.*\///g')
-            sleep 0.5
-            tmux send-keys -t $session_name "$init_cmd" Enter
-        end
-    end
-
-    function gwta
-        set branch $argv[1]
-
-        if test $(git rev-parse --is-inside-work-tree) != true && not test -d ./worktrees
-            echo "Not inside a git work-tree"
-            return
-        end
-
-        set repo_name $(pwd | sed 's/\/home\/jorge\/repos\///' | sed 's/\/.*//')
-
-        if test -z "$branch"
-            # NOTE: fzf doesn't show remote branches
-            for b in $(git branch)
-                if test -z $(echo $b | string match -r '^\+|\*')
-                    set -a branches $(echo $b | string trim -c '+* ')
-                end
-            end
-
-            if not set -q branches
-                echo "No branches available"
-                return
-            end
-            set branch $(printf "%s\n" $branches | fzf --header "branches" | xargs)
-        end
-
-        if test -z "$branch"
-            return
-        end
-
-        set branch $(echo $branch | string trim -c '+* ' | xargs)
-        set worktree_dir "$HOME/repos/$repo_name/$branch"
-        set branch_search_result $(git branch | string trim -c '+* ' | rg ^$branch\$)
-        if not test -z "$branch_search_result"
-            set worktree_search_result $(git worktree list | tail -n +2 | awk '{print $1}' \
-                                        | sed 's/\/home\/jorge\/repos\/'"$repo_name"'\///' \
-                                        | rg ^$branch\$)
-            if not test -z "$worktree_search_result"
-                echo "Work-tree already exists"
-            else
-                git worktree add $worktree_dir --checkout $branch &>/dev/null
-                echo "$worktree_dir"
-            end
-        else
-            git fetch origin $branch:$branch &>/dev/null
-            if test $status -eq 0
-                git worktree add $worktree_dir --checkout $branch &>/dev/null
-                echo "$worktree_dir"
-            else
-                git worktree add $worktree_dir -b $branch &>/dev/null
-                echo "$worktree_dir"
-            end
-        end
-    end
+    # function gwt
+    #     # TODO: Add support for remote branches
+    #     switch $(pwd)
+    #         case "$HOME/repos/*"
+    #             if test -d $repo_dir/worktrees
+    #                 set repo_dir "$HOME/repos/$(pwd | sed 's/\/home\/jorge\/repos\///' | sed 's/\/.*//')"
+    #             end
+    #     end
+    #     if not set -q repo_dir
+    #         set repo_candidates $(fd --type directory --max-depth 1 --base-directory $HOME/repos | string trim -c '/')
+    #         for repo in $repo_candidates
+    #             if test -d $HOME/repos/$repo/worktrees
+    #                 set -a worktree_repos $repo
+    #             end
+    #         end
+    #         set repo_name $(printf "%s\n" $worktree_repos | fzf --header "repos" | string trim -c '/' \
+    #                       | sed 's/\/home\/jorge\/repos\///' | sed 's/\/.*//')
+    #         set repo_dir "$HOME/repos/$repo_name"
+    #     end
+    #
+    #     if not set -q repo_dir || test $repo_dir = "$HOME/repos/" || test -z $repo_dir
+    #         return
+    #     end
+    #     if test -z $repo_name
+    #         set repo_name $(pwd | sed 's/\/home\/jorge\/repos\///' | sed 's/\/.*//')
+    #     end
+    #
+    #     if set -q argv[1]
+    #         set branch $(echo $argv[1] | xargs)
+    #         set branch_search_result $(git -C $repo_dir branch | string trim -c '+* ' | rg ^$branch\$)
+    #         if test -z "$branch_search_result"
+    #             return
+    #         end
+    #     else
+    #         set branch $(git -C $repo_dir branch | fzf --header "branches" | tr -d '[:space:]' \
+    #                     | tr -d " \t\n\r" | string trim -c '+*' | xargs)
+    #     end
+    #
+    #     if test -z "$branch"
+    #         return
+    #     end
+    #
+    #     set worktree_search_result $(git -C $repo_dir worktree list | tail -n +2 | awk '{print $1}' \
+    #                                 | sed 's/\/home\/jorge\/repos\/'"$repo_name"'\///' \
+    #                                 | rg ^$branch\$)
+    #     if test -z $worktree_search_result
+    #         set original_dir $(pwd)
+    #         cd $repo_dir
+    #         gwta $branch &>/dev/null
+    #         cd $original_dir
+    #         set worktree_dir "$repo_dir/$branch"
+    #         set -g init_cmd "$(~/.config/fish/worktree-create-cmds $worktree_dir)"
+    #     end
+    #     if not test -z $repo_dir && not test -z $branch
+    #         set worktree_dir "$repo_dir/$branch"
+    #         echo "$worktree_dir"
+    #     end
+    # end
+    #
+    # function wgwt
+    #     set worktree_dir $(gwt)
+    #     if test -z $worktree_dir
+    #         return
+    #     end
+    #     sudo webstorm $worktree_dir
+    #     sesh connect $worktree_dir
+    #
+    #     if set -q init_cmd && not test -z $init_cmd
+    #         set session_name (echo $worktree_dir | sed 's/.*\///g')
+    #         sleep 0.5
+    #         tmux send-keys -t $session_name "$init_cmd" Enter
+    #     end
+    # end
+    #
+    # function ggwt
+    #     set worktree_dir $(gwt)
+    #     if test -z $worktree_dir
+    #         return
+    #     end
+    #     sudo goland $worktree_dir
+    #     sesh connect $worktree_dir
+    #
+    #     if set -q init_cmd && not test -z $init_cmd
+    #         set session_name (echo $worktree_dir | sed 's/.*\///g')
+    #         sleep 0.5
+    #         tmux send-keys -t $session_name "$init_cmd" Enter
+    #     end
+    # end
+    #
+    # function pgwt
+    #     set worktree_dir $(gwt)
+    #     if test -z $worktree_dir
+    #         return
+    #     end
+    #     sudo pycharm $worktree_dir
+    #     sesh connect $worktree_dir
+    #
+    #     if set -q init_cmd && not test -z $init_cmd
+    #         set session_name (echo $worktree_dir | sed 's/.*\///g')
+    #         sleep 0.5
+    #         tmux send-keys -t $session_name "$init_cmd" Enter
+    #     end
+    # end
+    #
+    # function rgwt
+    #     set worktree_dir $(gwt)
+    #     if test -z $worktree_dir
+    #         return
+    #     end
+    #     sudo rustrover $worktree_dir
+    #     sesh connect $worktree_dir
+    #
+    #     if set -q init_cmd && not test -z $init_cmd
+    #         set session_name (echo $worktree_dir | sed 's/.*\///g')
+    #         sleep 0.5
+    #         tmux send-keys -t $session_name "$init_cmd" Enter
+    #     end
+    # end
+    #
+    # function cgwt
+    #     set worktree_dir $(gwt)
+    #     if test -z $worktree_dir
+    #         return
+    #     end
+    #     sudo clion $worktree_dir
+    #     sesh connect $worktree_dir
+    #
+    #     if set -q init_cmd && not test -z $init_cmd
+    #         set session_name (echo $worktree_dir | sed 's/.*\///g')
+    #         sleep 0.5
+    #         tmux send-keys -t $session_name "$init_cmd" Enter
+    #     end
+    # end
+    #
+    # function dgwt
+    #     set worktree_dir $(gwt)
+    #     if test -z $worktree_dir
+    #         return
+    #     end
+    #     sudo datagrip $worktree_dir
+    #     sesh connect $worktree_dir
+    #
+    #     if set -q init_cmd && not test -z $init_cmd
+    #         set session_name (echo $worktree_dir | sed 's/.*\///g')
+    #         sleep 0.5
+    #         tmux send-keys -t $session_name "$init_cmd" Enter
+    #     end
+    # end
+    #
+    # function gwta
+    #     set branch $argv[1]
+    #
+    #     if test $(git rev-parse --is-inside-work-tree) != true && not test -d ./worktrees
+    #         echo "Not inside a git work-tree"
+    #         return
+    #     end
+    #
+    #     set repo_name $(pwd | sed 's/\/home\/jorge\/repos\///' | sed 's/\/.*//')
+    #
+    #     if test -z "$branch"
+    #         # NOTE: fzf doesn't show remote branches
+    #         for b in $(git branch)
+    #             if test -z $(echo $b | string match -r '^\+|\*')
+    #                 set -a branches $(echo $b | string trim -c '+* ')
+    #             end
+    #         end
+    #
+    #         if not set -q branches
+    #             echo "No branches available"
+    #             return
+    #         end
+    #         set branch $(printf "%s\n" $branches | fzf --header "branches" | xargs)
+    #     end
+    #
+    #     if test -z "$branch"
+    #         return
+    #     end
+    #
+    #     set branch $(echo $branch | string trim -c '+* ' | xargs)
+    #     set worktree_dir "$HOME/repos/$repo_name/$branch"
+    #     set branch_search_result $(git branch | string trim -c '+* ' | rg ^$branch\$)
+    #     if not test -z "$branch_search_result"
+    #         set worktree_search_result $(git worktree list | tail -n +2 | awk '{print $1}' \
+    #                                     | sed 's/\/home\/jorge\/repos\/'"$repo_name"'\///' \
+    #                                     | rg ^$branch\$)
+    #         if not test -z "$worktree_search_result"
+    #             echo "Work-tree already exists"
+    #         else
+    #             git worktree add $worktree_dir --checkout $branch &>/dev/null
+    #             echo "$worktree_dir"
+    #         end
+    #     else
+    #         git fetch origin $branch:$branch &>/dev/null
+    #         if test $status -eq 0
+    #             git worktree add $worktree_dir --checkout $branch &>/dev/null
+    #             echo "$worktree_dir"
+    #         else
+    #             git worktree add $worktree_dir -b $branch &>/dev/null
+    #             echo "$worktree_dir"
+    #         end
+    #     end
+    # end
 
     function wgwta
         set worktree_dir $(gwta $argv[1])
@@ -596,6 +596,8 @@ bind -M insert \eu backward-kill-line
 bind -M insert \ec kil-whole-line
 bind -M insert \cy 'y && tmux send-keys Enter'
 bind -M default \cy 'y && tmux send-keys Enter'
+bind -M insert \cg 'lazygit'
+bind -M default \cg 'lazygit'
 bind -M insert \cd ''
 # bind -M insert \co 'tmux send-keys prevd Enter'
 # bind -M default \co 'tmux send-keys prevd Enter'
@@ -627,7 +629,7 @@ bind -M visual -m default y 'fish_clipboard_copy; commandline -f end-selection r
 # set -Ux theme_display_cmd_duration yes
 # set -Ux theme_powerline_fonts yes
 # set -Ux theme_nerd_fonts yes
-# set -Ux FZF_DEFAULT_OPTS '--cycle --layout=reverse --border --height=90% --preview-window=wrap --marker="*"'
+set -Ux FZF_DEFAULT_OPTS '--cycle --layout=reverse --border --height=90% --preview-window=wrap --marker="*"'
 
 # set -Ux T_REPOS_DIR $HOME/repos/
 # set -Ux YAZI_CONFIG_HOME $HOME/.config/yazi/
@@ -653,5 +655,12 @@ bind -M visual -m default y 'fish_clipboard_copy; commandline -f end-selection r
 # set -gx PNPM_HOME /home/jorge/Library/pnpm
 # if not string match -q -- $PNPM_HOME $PATH
 #     set -gx PATH "$PNPM_HOME" $PATH
+# end
+# # pnpm end
+
+# # pnpm
+# set -gx PNPM_HOME "/home/jorge/.local/share/pnpm"
+# if not string match -q -- $PNPM_HOME $PATH
+#   set -gx PATH "$PNPM_HOME" $PATH
 # end
 # # pnpm end
